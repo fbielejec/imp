@@ -1,0 +1,4 @@
+#NEXUS
+begin trees;
+	tree tree_1 = [&R] (SimSeq1[&!name="c"]:73.7468,(SimSeq2[&!name="b"]:25.25699,SimSeq3[&!name="a"]:45.25699)[&!name="d"]:18.48981);
+end;

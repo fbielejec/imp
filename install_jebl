@@ -1,0 +1,21 @@
+#!/bin/sh
+
+# https://www.pgrs.net/2011/10/30/using-local-jars-with-leiningen/
+
+ABSOLUTE_PATH="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/$(basename "${BASH_SOURCE[0]}")"
+
+if [ -d maven_repository ]; then
+    echo "dir exists"
+else 
+	mkdir maven_repository 
+fi
+
+wget 'https://sourceforge.net/projects/jebl/files/jebl/jebl-0.4/jebl-0.4.jar'
+
+mv jebl-0.4.jar maven_repository/
+
+echo $ABSOLUTE_PATH
+
+mvn install:install-file -Dfile=$ABSOLUTE_PATH/jebl-0.4.jar -DartifactId=jebl -Dversion=0.4 -DgroupId=jebl -Dpackaging=jar -DlocalRepositoryPath=maven_repository
+
+exit $?
