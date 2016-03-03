@@ -12,7 +12,7 @@
 ;http://stackoverflow.com/questions/18958972/why-are-only-32-threads-running-when-calling-futures-in-clojure
 
 ;baseline (Orbit): 23398 msec
-(def filename "/home/filip/Dropbox/ClojureProjects/newick_parser/resources/WNV.trees")
+(def filename "/home/filip/Dropbox/ClojureProjects/newick_parser/resources/WNV_small.trees")
 
 (def treeImporter
   (->>   filename
