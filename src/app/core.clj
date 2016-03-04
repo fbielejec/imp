@@ -53,7 +53,21 @@
 ;;;;;;;;;;;;;;;;;;;;;
 
 ;baseline (Orbit): 23398 msec
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;---GLOABL VARIABLES POLLUTING THE NAMESPACE :)---;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (def filename "/home/filip/Dropbox/ClojureProjects/newick_parser/resources/WNV.tre")
+
+(def xCoordinateName "location2")
+
+(def yCoordinateName "location1")
+
+
+;;;;;;;;;;;;;;;;;;;;;
+;;---HERE WE GO!---;;
+;;;;;;;;;;;;;;;;;;;;;
 
 (def treeImporter
   (->>   filename
@@ -88,26 +102,6 @@
 ;  );END: analyzeTree
 
 
-;; Write a function which takes a default value and a sequence of keys and constructs a map.
-;; (all keys point to that value)
-;(def map_cons
-;  (fn [ value keys]
-;
-;(reduce 
-;(fn [map key]
-;  
-;  (assoc map key value )
-;  
-;  ); f-tion
-;  {} ; initial
-;  keys; collection
-;  );END:reduce  
-;  
-;    );END:fn
-;  );END:def
-
-
-;(map_cons 0 [:a :b :c])
 
 
 
@@ -126,10 +120,10 @@
            
             
             (assoc map parentNode {
-                                   :startX 0.1 ; long
-                                   :startY 0.3 ;lat
-                                   :endX 0.5 ;long
-                                   :endY 0.4 ;
+                                   :startX ( . parentNode getAttribute xCoordinateName ) ; parent long
+                                   :startY ( . parentNode getAttribute yCoordinateName ) ;parent lat
+                                   :endX  ( . node getAttribute xCoordinateName ); long
+                                   :endY  ( . node getAttribute yCoordinateName ) ; lat
                                    :time  (- (. tree getHeight parentNode)  (. tree getHeight node) ) ;
                                    } )
             
