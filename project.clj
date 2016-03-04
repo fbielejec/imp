@@ -10,6 +10,6 @@
                  [jebl "0.4"]
   ]
   
-  :main newick-parser.core
+  :main app.core
   
   )
