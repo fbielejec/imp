@@ -117,11 +117,25 @@
     
     (reduce 
       (fn [map node]
-        (do
+        
+        (if  ( not (. tree isRoot node))
           
-          (assoc map node {:startX 0.1 :startY 0.3 :endX 0.5 :endY 0.4 :time 0.71 } )
+          (let [parentNode (. tree getParent node)]
+            
+;             ( . node getAttribute "location1" )
+           
+            
+            (assoc map parentNode {
+                                   :startX 0.1 ; long
+                                   :startY 0.3 ;lat
+                                   :endX 0.5 ;long
+                                   :endY 0.4 ;
+                                   :time  (- (. tree getHeight parentNode)  (. tree getHeight node) ) ;
+                                   } )
+            
+            );END:let
           
-          );END:do
+          );END:if
         
         ); f-tion
       {} ; initial
