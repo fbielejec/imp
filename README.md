@@ -1,9 +1,10 @@
-# Rascal
+# Imp
 
-Calculating and plot spatial statistics.
+Calculate spatial statistics, output in JSON format
 
 ## Usage
 
+lein install
 lein run
 
 ## License
