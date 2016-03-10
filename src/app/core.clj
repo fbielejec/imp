@@ -108,15 +108,41 @@
 
 
 (defn createSlices [branchesMap]
-  
   (let [ minim (getMinStartTime branchesMap) maxim (getMaxStartTime branchesMap) by (/ ( - maxim minim)  nSlices ) ]
-  
- (count (range minim maxim by) )
-
-  )
-  
+    
+    (range minim maxim by) 
+    
+    );END:let
   );END:createSlices
 
+
+(defn getRootCoords [tree]
+  
+  (let  [rootNode (. tree getRootNode ) ] 
+    (let  [rootCoords ( . rootNode getAttribute coordinateName )]
+      
+      {
+       :startX ( get  rootCoords 0 ) ;  long
+       :startY ( get  rootCoords 1 ) ; lat
+       }
+      
+      );END:let
+    );END:let
+  );END: getRootCoords
+
+
+(defn getDistances [branchesMap tree]
+  
+  (let [slices (createSlices branchesMap) ]
+
+    
+   (getRootCoords tree)
+
+    
+    
+    );END:let
+  
+  );END: getDistances
 
 
 
@@ -137,9 +163,7 @@
         
         (println
           
-          ;        (utils/printHashMap branchesMap)
-          
-          ( createSlices branchesMap )
+          ( getDistances branchesMap currentTree)
           
           ;        ( -> branchesMap   count println  )
           
