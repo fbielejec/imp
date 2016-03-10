@@ -4,13 +4,11 @@
   (:require [app.utils :as utils])
   )
 
-;baseline (Orbit): 23398 msec
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;---GLOABL VARIABLES POLLUTING THE NAMESPACE :)---;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(def filename "/home/filip/Dropbox/ClojureProjects/newick_parser/resources/WNV.tre")
+(def filename "/home/filip/Dropbox/ClojureProjects/imp/resources/WNV_small.trees")
 
 (def xCoordinateName "location2")
 
@@ -31,63 +29,95 @@
 
 ; :node001 {:startX 0.1 :startY 0.3 :endX 0.5 :endY 0.4 :time 0.71 }
 
+
+;(defn analyzeTree [tree]
+;  (let [nodes (into #{}  (. tree getNodes ))  ]
+;    
+;    (reduce 
+;      (fn [map node]
+;        
+;        (if  ( not (. tree isRoot node))
+;          
+;          (let [parentNode (. tree getParent node)]
+;            
+;            (assoc map parentNode {
+;                                   ;                                   :startX ( . parentNode getAttribute xCoordinateName ) ; parent long
+;                                   ;                                   :startY ( . parentNode getAttribute yCoordinateName ) ;parent lat
+;                                   ;                                   :endX  ( . node getAttribute xCoordinateName ); long
+;                                   ;                                   :endY  ( . node getAttribute yCoordinateName ) ; lat
+;                                   ;                                   :startTime (. tree getHeight node) 
+;                                   ;                                   :endTime (. tree getHeight parentNode)
+;                                   :length  (- (. tree getHeight parentNode)  (. tree getHeight node) ) ;
+;                                   } )
+;            
+;            );END:let
+;          
+;          );END:if
+;        
+;        ); f-tion
+;      {} ; initial
+;      nodes; collection
+;      );END:reduce 
+;    
+;    );END:let
+;  );END: analyzeTree
+
 (defn analyzeTree [tree]
-  (let [nodes (into #{}  (. tree getNodes ))  ]
-    
-    (reduce 
-      (fn [map node]
+  
+  (into {}
         
-        (if  ( not (. tree isRoot node))
+        (let [nodes (into #{}  (. tree getNodes ))  ]
           
-          (let [parentNode (. tree getParent node)]
-            
-            (assoc map parentNode {
-                                   :startX ( . parentNode getAttribute xCoordinateName ) ; parent long
-                                   :startY ( . parentNode getAttribute yCoordinateName ) ;parent lat
-                                   :endX  ( . node getAttribute xCoordinateName ); long
-                                   :endY  ( . node getAttribute yCoordinateName ) ; lat
-                                   :time  (- (. tree getHeight parentNode)  (. tree getHeight node) ) ;
-                                   } )
-            
-            );END:let
+          (map  (fn [node]
+                  (if  ( not (. tree isRoot node))
+                    (let [parentNode (. tree getParent node)]
+                      (do
+                        
+                        (hash-map node {
+                                        :length  (- (. tree getHeight parentNode)  (. tree getHeight node) )
+                                        })
+                        
+                        ;                   (utils/printHashMap nodes)
+                        
+                        );END: do
+                      );END: let
+                    );END: if
+                  );END: fn
+                nodes
+                );END: map
           
-          );END:if
-        
-        ); f-tion
-      {} ; initial
-      nodes; collection
-      );END:reduce 
-    
-    );END:let
+          );END:let
+        )
   );END: analyzeTree
 
 
-
 (defn treesLoop []
-  ;  
-  ;  (doall
-  ;    (map deref
-  ;         (doall
-  
   (while (. treeImporter hasTree)
-    
-    (let [currentTree (. treeImporter importNextTree ) ]
-      
-;      (utils/printHashMap 
-(println (utils/toJSON
-                 
-           (analyzeTree currentTree)
-                 
-                 ) )
+  (let [currentTree (. treeImporter importNextTree ) ]
 
-      );END:let
     
-    );END: while
-  
-  ;           );END :doall
-  ;         );END: map deref
-  ;    );END: doall
-  
+;    (let [nodes (into #{}  (. currentTree getNodes ))  ] 
+;      
+;       ( -> nodes   count println  )
+;      
+;      )
+    
+    
+    (let [res (analyzeTree currentTree) ]
+      (do
+        
+;        (utils/printHashMap res)
+        
+         (println (count (keys res ) ) )
+
+;        ( -> res   count println  )
+        
+        );END: do
+      );END:let
+
+
+    );END:let
+     );END: while
   );END: treesLoop
 
 
