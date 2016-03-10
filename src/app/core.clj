@@ -10,11 +10,12 @@
 
 (def filename "/home/filip/Dropbox/ClojureProjects/imp/resources/WNV_small.trees")
 
-(def xCoordinateName "location2")
-
-(def yCoordinateName "location1")
+;(def xCoordinateName "location2")
+;(def yCoordinateName "location1")
 
 (def coordinateName "location")
+
+(def nSlices 1000)
 
 ;;;;;;;;;;;;;;;;;;;;;
 ;;---HERE WE GO!---;;
@@ -95,45 +96,61 @@
         );END: into
   );END: analyzeTree
 
-; :node001 {:startX 0.1 :startY 0.3 :endX 0.5 :endY 0.4 :time 0.71 }
+
 (defn getMinStartTime [branchesMap]
+  (apply min (map :startTime (vals branchesMap)  ) )
+  );END: getMinStartTime
+
+
+(defn getMaxStartTime [branchesMap]
+  (apply max (map :startTime (vals branchesMap)  ) )
+  );END: getMaxStartTime
+
+
+(defn createSlices [branchesMap]
   
- (apply max (map :startTime (vals branchesMap)  ) )
+  (let [ minim (getMinStartTime branchesMap) maxim (getMaxStartTime branchesMap) by (/ ( - maxim minim)  nSlices ) ]
   
+ (count (range minim maxim by) )
+
   )
+  
+  );END:createSlices
+
+
 
 
 (defn treesLoop []
-;  (while (. treeImporter hasTree)
+  ;  (while (. treeImporter hasTree)
   (let [currentTree (. treeImporter importNextTree ) ]
-
     
-;    (let [nodes (into #{}  (. currentTree getNodes ))  ] 
-;      
-;       ( -> nodes   count println  )
-;      
-;      )
+    
+    ;    (let [nodes (into #{}  (. currentTree getNodes ))  ] 
+    ;      
+    ;       ( -> nodes   count println  )
+    ;      
+    ;      )
     
     
     (let [branchesMap (analyzeTree currentTree) ]
       (do
- 
+        
         (println
+          
+          ;        (utils/printHashMap branchesMap)
+          
+          ( createSlices branchesMap )
+          
+          ;        ( -> branchesMap   count println  )
+          
+          )
         
-;        (utils/printHashMap branchesMap)
-        
-         ( getMinStartTime branchesMap )
-
-;        ( -> branchesMap   count println  )
-        
-)
-
         );END: do
       );END:let
-
-
+    
+    
     );END:let
-;     );END: while
+  ;     );END: while
   );END: treesLoop
 
 
