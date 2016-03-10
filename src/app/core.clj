@@ -107,13 +107,13 @@
   );END: getMaxStartTime
 
 
-(defn createSlices [branchesMap]
+(defn createSliceHeights [branchesMap]
   (let [ minim (getMinStartTime branchesMap) maxim (getMaxStartTime branchesMap) by (/ ( - maxim minim)  nSlices ) ]
     
     (range minim maxim by) 
     
     );END:let
-  );END:createSlices
+  );createSliceHeights
 
 
 (defn getRootCoords [tree]
@@ -130,13 +130,77 @@
     );END:let
   );END: getRootCoords
 
+;   (<= (:startTime (vals branchesMap)) sliceHeight (:endTime (vals branchesMap) ) )
+; :node001 {:startX 0.1 :startY 0.3 :endX 0.5 :endY 0.4 :length 0.71 }
+
+(defn filterBySlice [branchesMap sliceHeight]
+
+  (filter (fn [branch]
+
+;  (println 
+    
+; (map :endTime branch)   "\n"
+    
+   (<=  (:startTime ( val branch) )  sliceHeight (:endTime ( val branch) ) ) ;;"\n"
+
+;    )
+
+  
+;  false
+  
+            );END:fn
+          branchesMap
+          );END: filter
+  
+  );END:filterBySlice 
+
+
+
+; :node001 {:startTime 0.1 :endTime 0.3   }
+
+; :node002 {:startTime 0.4 :endTime 0.5 }
 
 (defn getDistances [branchesMap tree]
   
-  (let [slices (createSlices branchesMap) ]
+  (let [sliceHeights (createSliceHeights branchesMap) rootCoord (getRootCoords tree) ]
+    
+    
+
+      
+      ( let [slice (nth sliceHeights 25 ) ]
+
+     ( filterBySlice branchesMap slice)
+        
+        )
+
 
     
-   (getRootCoords tree)
+    
+    
+;   (reduce
+;     (fn [slicesMap sliceHeight ]
+;       
+;        TODO : which branches are intersected by this slice
+;        TODO get the furthest one from root
+;
+;(println
+;  
+;   (map :startTime (vals branchesMap) ) 
+;  
+; )
+;				if (nodeHeight < sliceHeight
+;								&& sliceHeight <= parentHeight)
+;
+;       (assoc slicesMap sliceHeight {
+;                                     :distance 0.0
+;                                     }
+; 
+;         );END: assoc
+;       
+;       );END:fn
+;      { } ;initial
+;      sliceHeights ;coll
+;     );END:reduce
 
     
     
@@ -164,7 +228,6 @@
         (println
           
           ( getDistances branchesMap currentTree)
-          
           ;        ( -> branchesMap   count println  )
           
           )
