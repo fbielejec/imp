@@ -74,10 +74,14 @@
                       (do
                         
                         (hash-map node {
+                                        :startX ( . parentNode getAttribute xCoordinateName ) ; parent long
+                                        :startY ( . parentNode getAttribute yCoordinateName ) ;parent lat
+                                        :endX  ( . node getAttribute xCoordinateName ); long
+                                        :endY  ( . node getAttribute yCoordinateName ) ; lat
+                                        :startTime (. tree getHeight node) 
+                                        :endTime (. tree getHeight parentNode)
                                         :length  (- (. tree getHeight parentNode)  (. tree getHeight node) )
                                         })
-                        
-                        ;                   (utils/printHashMap nodes)
                         
                         );END: do
                       );END: let
@@ -92,7 +96,7 @@
 
 
 (defn treesLoop []
-  (while (. treeImporter hasTree)
+;  (while (. treeImporter hasTree)
   (let [currentTree (. treeImporter importNextTree ) ]
 
     
@@ -108,7 +112,7 @@
         
 ;        (utils/printHashMap res)
         
-         (println (count (keys res ) ) )
+         (println (count  res  ) )
 
 ;        ( -> res   count println  )
         
@@ -117,7 +121,7 @@
 
 
     );END:let
-     );END: while
+;     );END: while
   );END: treesLoop
 
 
