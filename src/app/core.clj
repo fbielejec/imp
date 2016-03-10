@@ -28,7 +28,6 @@
   );END: treeImporter
 
 
-; :node001 {:startX 0.1 :startY 0.3 :endX 0.5 :endY 0.4 :time 0.71 }
 
 
 ;(defn analyzeTree [tree]
@@ -63,6 +62,7 @@
 ;    );END:let
 ;  );END: analyzeTree
 
+
 (defn analyzeTree [tree]
   
   (into {}
@@ -92,8 +92,15 @@
                 );END: map
           
           );END:let
-        )
+        );END: into
   );END: analyzeTree
+
+; :node001 {:startX 0.1 :startY 0.3 :endX 0.5 :endY 0.4 :time 0.71 }
+(defn getMinStartTime [branchesMap]
+  
+ (apply max (map :startTime (vals branchesMap)  ) )
+  
+  )
 
 
 (defn treesLoop []
@@ -108,15 +115,19 @@
 ;      )
     
     
-    (let [res (analyzeTree currentTree) ]
+    (let [branchesMap (analyzeTree currentTree) ]
       (do
+ 
+        (println
         
-        (utils/printHashMap res)
+;        (utils/printHashMap branchesMap)
         
-;         (println (count  res  ) )
+         ( getMinStartTime branchesMap )
 
-;        ( -> res   count println  )
+;        ( -> branchesMap   count println  )
         
+)
+
         );END: do
       );END:let
 
