@@ -14,6 +14,7 @@
 
 (def yCoordinateName "location1")
 
+(def coordinateName "location")
 
 ;;;;;;;;;;;;;;;;;;;;;
 ;;---HERE WE GO!---;;
@@ -71,19 +72,19 @@
           (map  (fn [node]
                   (if  ( not (. tree isRoot node))
                     (let [parentNode (. tree getParent node)]
-                      (do
+                      (let [nodeCoord ( . node getAttribute coordinateName ) parentCoord ( . parentNode getAttribute coordinateName ) ]
                         
                         (hash-map node {
-                                        :startX ( . parentNode getAttribute xCoordinateName ) ; parent long
-                                        :startY ( . parentNode getAttribute yCoordinateName ) ;parent lat
-                                        :endX  ( . node getAttribute xCoordinateName ); long
-                                        :endY  ( . node getAttribute yCoordinateName ) ; lat
+                                        :startX ( get  parentCoord 0 ) ; parent long
+                                        :startY ( get  parentCoord 1 ) ;parent lat
+                                        :endX  ( get  nodeCoord 0 ); long
+                                        :endY  ( get  nodeCoord 1 ) ; lat
                                         :startTime (. tree getHeight node) 
                                         :endTime (. tree getHeight parentNode)
                                         :length  (- (. tree getHeight parentNode)  (. tree getHeight node) )
                                         })
                         
-                        );END: do
+                        );END: let
                       );END: let
                     );END: if
                   );END: fn
@@ -110,9 +111,9 @@
     (let [res (analyzeTree currentTree) ]
       (do
         
-;        (utils/printHashMap res)
+        (utils/printHashMap res)
         
-         (println (count  res  ) )
+;         (println (count  res  ) )
 
 ;        ( -> res   count println  )
         
