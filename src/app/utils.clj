@@ -13,7 +13,7 @@
 
 
 (defn toJSON [hashMap]
-  "call to clojure.data.json library to generate JSON from Clojure data structure"
+  "Call to clojure.data.json library to generate JSON from Clojure data structure"
   (json/write-str hashMap)
   );END: saveJSON
 

@@ -29,7 +29,14 @@
   );END: treeImporter
 
 
-
+(defn getRootCoords [tree]
+  "Returns root coordinate attribute values"
+  (let  [rootNode (. tree getRootNode ) ] 
+    
+    ( . rootNode getAttribute coordinateName )
+    
+    );END:let
+  );END: getRootCoords
 
 ;(defn analyzeTree [tree]
 ;  (let [nodes (into #{}  (. tree getNodes ))  ]
@@ -46,8 +53,8 @@
 ;                                   ;                                   :startY ( . parentNode getAttribute yCoordinateName ) ;parent lat
 ;                                   ;                                   :endX  ( . node getAttribute xCoordinateName ); long
 ;                                   ;                                   :endY  ( . node getAttribute yCoordinateName ) ; lat
-;                                   ;                                   :startTime (. tree getHeight node) 
-;                                   ;                                   :endTime (. tree getHeight parentNode)
+;                                   ;                                   :startHeight (. tree getHeight node) 
+;                                   ;                                   :endHeight (. tree getHeight parentNode)
 ;                                   :length  (- (. tree getHeight parentNode)  (. tree getHeight node) ) ;
 ;                                   } )
 ;            
@@ -64,11 +71,27 @@
 ;  );END: analyzeTree
 
 
-(defn analyzeTree [tree]
+(defn getDistanceToRoot 
+  "Returns great-cricle-distance distance between two coordinates"
+  [nodeCoord rootCoord]
+  (let [lat1 ( get  nodeCoord 1 ) long1 ( get  nodeCoord 0 ) lat2 ( get  rootCoord 1 ) long2 ( get  rootCoord 0 )]
+    
+    (utils/great-circle-distance  lat1 long1 lat2 long2 )
+    
+    
+    );END:let
+  );END:getDistanceToRoot
+
+; :node001 {:startX 0.1 :startY 0.3 :endX 0.5 :endY 0.4 :length 0.71 }
+(defn analyzeTree 
+  "Represents tree as a map of branches (node-parent pairs): 
+   :node001 {:startX 0.1 :startY 0.3 :endX 0.5 :endY 0.4 :length 0.71 }
+   key is a node which represents the branch, value is a map of attributes we need later"
+  [tree]
   
   (into {}
         
-        (let [nodes (into #{}  (. tree getNodes ))  ]
+        (let [nodes (into #{}  (. tree getNodes )) rootCoord (getRootCoords tree) ]
           
           (map  (fn [node]
                   (if  ( not (. tree isRoot node))
@@ -80,9 +103,10 @@
                                         :startY ( get  parentCoord 1 ) ;parent lat
                                         :endX  ( get  nodeCoord 0 ); long
                                         :endY  ( get  nodeCoord 1 ) ; lat
-                                        :startTime (. tree getHeight node) 
-                                        :endTime (. tree getHeight parentNode)
+                                        :startHeight (. tree getHeight node) 
+                                        :endHeight (. tree getHeight parentNode)
                                         :length  (- (. tree getHeight parentNode)  (. tree getHeight node) )
+                                        :distanceToRoot (getDistanceToRoot nodeCoord rootCoord)
                                         })
                         
                         );END: let
@@ -98,16 +122,18 @@
 
 
 (defn getMinStartTime [branchesMap]
-  (apply min (map :startTime (vals branchesMap)  ) )
+  (apply min (map :startHeight (vals branchesMap)  ) )
   );END: getMinStartTime
 
 
 (defn getMaxStartTime [branchesMap]
-  (apply max (map :startTime (vals branchesMap)  ) )
+;  TODO: maybe :endHeight ?
+  (apply max (map :startHeight (vals branchesMap)  ) )
   );END: getMaxStartTime
 
 
 (defn createSliceHeights [branchesMap]
+  "Returns a sequence of length nSlices"
   (let [ minim (getMinStartTime branchesMap) maxim (getMaxStartTime branchesMap) by (/ ( - maxim minim)  nSlices ) ]
     
     (range minim maxim by) 
@@ -116,63 +142,60 @@
   );createSliceHeights
 
 
-(defn getRootCoords [tree]
-  
-  (let  [rootNode (. tree getRootNode ) ] 
-    (let  [rootCoords ( . rootNode getAttribute coordinateName )]
-      
-      {
-       :startX ( get  rootCoords 0 ) ;  long
-       :startY ( get  rootCoords 1 ) ; lat
-       }
-      
-      );END:let
-    );END:let
-  );END: getRootCoords
-
-;   (<= (:startTime (vals branchesMap)) sliceHeight (:endTime (vals branchesMap) ) )
-; :node001 {:startX 0.1 :startY 0.3 :endX 0.5 :endY 0.4 :length 0.71 }
-
-(defn filterBySlice [branchesMap sliceHeight]
-
+(defn filterBySlice 
+  "Return collection of branches which are intersected by sliceHeight"
+  [branchesMap sliceHeight]
   (filter (fn [branch]
-
-;  (println 
-    
-; (map :endTime branch)   "\n"
-    
-   (<=  (:startTime ( val branch) )  sliceHeight (:endTime ( val branch) ) ) ;;"\n"
-
-;    )
-
-  
-;  false
-  
+            
+            (<=  (:startHeight ( val branch) )  sliceHeight (:endHeight ( val branch) ) ) 
+            
             );END:fn
           branchesMap
           );END: filter
-  
   );END:filterBySlice 
 
 
+;furthest. is that a word?
+(defn getFurthestFromRoot
+  "From a collection of branches return the one which is furthest from root"
+  [branchesSubset]
+  (let [ maxDist (apply max (map :distanceToRoot (vals branchesSubset)  ) )]
+    (filter (fn [branch]
+              
+              (==  (:distanceToRoot ( val branch) ) maxDist) 
+              
+              );END:fn
+            branchesSubset
+            );END: filter
+    );END:let 
+  );END: getFurthestFromRoot
 
-; :node001 {:startTime 0.1 :endTime 0.3   }
 
-; :node002 {:startTime 0.4 :endTime 0.5 }
-
-(defn getDistances [branchesMap tree]
+(defn getDistances 
+  "TODO"
+  [branchesMap tree]
   
-  (let [sliceHeights (createSliceHeights branchesMap) rootCoord (getRootCoords tree) ]
+  (let [sliceHeights (createSliceHeights branchesMap)  ]
     
     
 
       
-      ( let [slice (nth sliceHeights 25 ) ]
-
-     ( filterBySlice branchesMap slice)
+    ( let [slice (nth sliceHeights 25 ) ]
+      (let [ branchesSubset ( filterBySlice branchesMap slice) ]
         
-        )
-
+        (do 
+          
+        (println branchesSubset)
+        
+        (println "---------------")
+        
+        (println (getFurthestFromRoot branchesSubset) )
+        
+        );END:do
+        
+        );END:let
+      );END:let
+    
 
     
     
@@ -185,7 +208,7 @@
 ;
 ;(println
 ;  
-;   (map :startTime (vals branchesMap) ) 
+;   (map :startHeight (vals branchesMap) ) 
 ;  
 ; )
 ;				if (nodeHeight < sliceHeight
