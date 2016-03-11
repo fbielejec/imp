@@ -38,38 +38,6 @@
     );END:let
   );END: getRootCoords
 
-;(defn analyzeTree [tree]
-;  (let [nodes (into #{}  (. tree getNodes ))  ]
-;    
-;    (reduce 
-;      (fn [map node]
-;        
-;        (if  ( not (. tree isRoot node))
-;          
-;          (let [parentNode (. tree getParent node)]
-;            
-;            (assoc map parentNode {
-;                                   ;                                   :startX ( . parentNode getAttribute xCoordinateName ) ; parent long
-;                                   ;                                   :startY ( . parentNode getAttribute yCoordinateName ) ;parent lat
-;                                   ;                                   :endX  ( . node getAttribute xCoordinateName ); long
-;                                   ;                                   :endY  ( . node getAttribute yCoordinateName ) ; lat
-;                                   ;                                   :startHeight (. tree getHeight node) 
-;                                   ;                                   :endHeight (. tree getHeight parentNode)
-;                                   :length  (- (. tree getHeight parentNode)  (. tree getHeight node) ) ;
-;                                   } )
-;            
-;            );END:let
-;          
-;          );END:if
-;        
-;        ); f-tion
-;      {} ; initial
-;      nodes; collection
-;      );END:reduce 
-;    
-;    );END:let
-;  );END: analyzeTree
-
 
 (defn getDistanceToRoot 
   "Returns great-cricle-distance distance between two coordinates"
@@ -81,6 +49,7 @@
     
     );END:let
   );END:getDistanceToRoot
+
 
 ; :node001 {:startX 0.1 :startY 0.3 :endX 0.5 :endY 0.4 :length 0.71 }
 (defn analyzeTree 
@@ -127,7 +96,7 @@
 
 
 (defn getMaxStartTime [branchesMap]
-;  TODO: maybe :endHeight ?
+  ;  TODO: maybe :endHeight ?
   (apply max (map :startHeight (vals branchesMap)  ) )
   );END: getMaxStartTime
 
@@ -172,97 +141,62 @@
 
 
 (defn getDistances 
-  "TODO"
+  "For every slice calculate spatial stats"
   [branchesMap tree]
   
   (let [sliceHeights (createSliceHeights branchesMap)  ]
     
-    
-
-      
-    ( let [slice (nth sliceHeights 25 ) ]
-      (let [ branchesSubset ( filterBySlice branchesMap slice) ]
+    (reduce
+      (fn [slicesMap sliceHeight ]
         
-        (do 
+        ;    get the branches  intersected by this slice
+        (let [ branchesSubset ( filterBySlice branchesMap sliceHeight) ]
           
-        (println branchesSubset)
+          ;  get the furthest one from root 
+          (let [ furthestBranch (getFurthestFromRoot branchesSubset) ]
+            
+            (let [dist (map :distanceToRoot ( vals furthestBranch) ) length (map :length ( vals furthestBranch) )  ]
+              
+              (assoc slicesMap sliceHeight {
+                                            :wavefrontDistance (/ (nth dist 0) (nth length 0) )
+                                            } );END: assoc
+              
+              );END:let
+            
+            );END:let
+          );END:let
         
-        (println "---------------")
-        
-        (println (getFurthestFromRoot branchesSubset) )
-        
-        );END:do
-        
-        );END:let
-      );END:let
-    
-
-    
-    
-    
-;   (reduce
-;     (fn [slicesMap sliceHeight ]
-;       
-;        TODO : which branches are intersected by this slice
-;        TODO get the furthest one from root
-;
-;(println
-;  
-;   (map :startHeight (vals branchesMap) ) 
-;  
-; )
-;				if (nodeHeight < sliceHeight
-;								&& sliceHeight <= parentHeight)
-;
-;       (assoc slicesMap sliceHeight {
-;                                     :distance 0.0
-;                                     }
-; 
-;         );END: assoc
-;       
-;       );END:fn
-;      { } ;initial
-;      sliceHeights ;coll
-;     );END:reduce
-
-    
+        );END:fn
+      { } ;initial
+      sliceHeights ;coll
+      );END:reduce
     
     );END:let
-  
   );END: getDistances
 
 
-
-(defn treesLoop []
-  ;  (while (. treeImporter hasTree)
+(defn treesLoop 
+  "Iterate over trees distribution calculating spatial stats"
+  []
+;    (while (. treeImporter hasTree)
   (let [currentTree (. treeImporter importNextTree ) ]
     
-    
-    ;    (let [nodes (into #{}  (. currentTree getNodes ))  ] 
-    ;      
-    ;       ( -> nodes   count println  )
-    ;      
-    ;      )
-    
-    
     (let [branchesMap (analyzeTree currentTree) ]
-      (do
+      (println
         
-        (println
+        
+        (utils/toJSON
           
-          ( getDistances branchesMap currentTree)
-          ;        ( -> branchesMap   count println  )
+          ( getDistances branchesMap currentTree )
           
           )
         
-        );END: do
+        );END: println
       );END:let
     
-    
     );END:let
-  ;     );END: while
+;      );END: while
   );END: treesLoop
-
 
 
 (defn -main
