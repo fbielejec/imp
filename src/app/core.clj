@@ -15,7 +15,7 @@
 
 (def coordinateName "location")
 
-(def nSlices 10)
+(def nSlices 100)
 
 ;;;;;;;;;;;;;;;;;;;;;
 ;;---HERE WE GO!---;;
@@ -72,9 +72,8 @@
                                         :startY ( get  parentCoord 1 ) ;parent lat
                                         :endX  ( get  nodeCoord 0 ); long
                                         :endY  ( get  nodeCoord 1 ) ; lat
-                                        :startHeight (. tree getHeight node)
-                                        :endHeight (. tree getHeight parentNode)
-                                        :length  (- (. tree getHeight parentNode)  (. tree getHeight node) )
+                                        :nodeHeight (. tree getHeight node)
+                                        :parentHeight (. tree getHeight parentNode)
                                         :distanceToRoot (getDistanceToRoot nodeCoord rootCoord)
                                         })
 
@@ -91,13 +90,13 @@
 
 
 (defn getMinStartTime [branchesMap]
-  (apply min (map :startHeight (vals branchesMap)  ) )
+  (apply min (map :nodeHeight (vals branchesMap)  ) )
   );END: getMinStartTime
 
 
 (defn getMaxStartTime [branchesMap]
-  ;  TODO: maybe :endHeight ?
-  (apply max (map :startHeight (vals branchesMap)  ) )
+  ;  TODO: maybe :parentHeight ?
+  (apply max (map :nodeHeight (vals branchesMap)  ) )
   );END: getMaxStartTime
 
 
@@ -116,7 +115,7 @@
   [branchesMap sliceHeight]
   (filter (fn [branch]
 
-            (<=  (:startHeight ( val branch) )  sliceHeight (:endHeight ( val branch) ) )
+            (<=  (:nodeHeight ( val branch) )  sliceHeight (:parentHeight ( val branch) ) )
 
             );END:fn
           branchesMap
@@ -155,7 +154,7 @@
           ;  get the furthest one from root
           (let [ furthestBranch (getFurthestFromRoot branchesSubset) ]
 
-            (let [dist (map :distanceToRoot ( vals furthestBranch) ) length (map :length ( vals furthestBranch) )  ]
+            (let [dist (map :distanceToRoot ( vals furthestBranch) ) length (map :parentHeight ( vals furthestBranch) )  ]
 
               (assoc slicesMap sliceHeight {
                                             :wavefrontDistance (/ (nth dist 0) (nth length 0) )
@@ -184,12 +183,10 @@
     (let [branchesMap (analyzeTree currentTree) ]
       (println
 
-
         (utils/toJSON
-
-(into (sorted-map)
+            (into (sorted-map)
           ( getDistances branchesMap currentTree )
-);END: sorted-map
+              );END: sorted-map
           );END:toJSON
 
         );END: println
