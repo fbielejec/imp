@@ -10,12 +10,16 @@
 
 (def filename "/home/filip/Dropbox/ClojureProjects/imp/resources/WNV_small.trees")
 
+; (def filename "/home/filip/Dropbox/ClojureProjects/imp/resources/WNV_relaxed_geo_gamma.trees")
+
 ;(def xCoordinateName "location2")
 ;(def yCoordinateName "location1")
 
 (def coordinateName "location")
 
 (def nSlices 100)
+
+(def mrsd 2007.3)
 
 ;;;;;;;;;;;;;;;;;;;;;
 ;;---HERE WE GO!---;;
@@ -45,7 +49,6 @@
   (let [lat1 ( get  nodeCoord 1 ) long1 ( get  nodeCoord 0 ) lat2 ( get  rootCoord 1 ) long2 ( get  rootCoord 0 )]
 
     (utils/great-circle-distance  lat1 long1 lat2 long2 )
-
 
     );END:let
   );END:getDistanceToRoot
@@ -95,7 +98,6 @@
 
 
 (defn getMaxStartTime [branchesMap]
-  ;  TODO: maybe :parentHeight ?
   (apply max (map :nodeHeight (vals branchesMap)  ) )
   );END: getMaxStartTime
 
@@ -173,11 +175,15 @@
     );END:let
   );END: getDistances
 
-
+; :time1 {
+;       :wavefront1 [tree1, tree2, ...]
+;       :wavefront2 [lwr, mean, upr]
+;       ...
+; }
 (defn treesLoop
   "Iterate over trees distribution calculating spatial stats"
   []
-;    (while (. treeImporter hasTree)
+  ;  (while (. treeImporter hasTree)
   (let [currentTree (. treeImporter importNextTree ) ]
 
     (let [branchesMap (analyzeTree currentTree) ]
@@ -193,7 +199,7 @@
       );END:let
 
     );END:let
-;      );END: while
+    ;  );END: while
   );END: treesLoop
 
 

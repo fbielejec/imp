@@ -14,3 +14,4 @@ pom.xml.asc
 .settings/
 bin/
 resources/WNV.trees
+WNV_relaxed_geo_gamma.trees
