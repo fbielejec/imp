@@ -17,7 +17,7 @@
 
 (def coordinateName "location")
 
-(def nSlices 100)
+(def nSlices 10)
 
 (def mrsd 2007.3)
 
@@ -143,7 +143,7 @@
 
 (defn getDistances
   "For every slice calculate spatial stats"
-  [branchesMap tree]
+  [branchesMap]
 
   (let [sliceHeights (createSliceHeights branchesMap)  ]
 
@@ -180,6 +180,26 @@
 ;       :wavefront2 [lwr, mean, upr]
 ;       ...
 ; }
+; (defn treesLoop
+;   "Iterate over trees distribution calculating spatial stats"
+;   []
+; (while (. treeImporter hasTree)
+;   (let [currentTree (. treeImporter importNextTree ) ]
+;
+;     (let [branchesMap (analyzeTree currentTree) ]
+;
+;
+;
+;
+;       );END:let
+;
+;     );END:let
+; );END: while
+;   );END: treesLoop
+
+
+
+
 (defn treesLoop
   "Iterate over trees distribution calculating spatial stats"
   []
@@ -191,7 +211,7 @@
 
         (utils/toJSON
             (into (sorted-map)
-          ( getDistances branchesMap currentTree )
+          ( getDistances branchesMap  )
               );END: sorted-map
           );END:toJSON
 
