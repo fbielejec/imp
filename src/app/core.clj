@@ -14,7 +14,7 @@
 
 (def coordinateName "location")
 
-(def nSlices 10)
+(def nSlices 11)
 
 (def mrsd 2007.3)
 
@@ -211,6 +211,7 @@
   
   (->> mapsVector
     ( apply utils/merge-maps)
+    (into (sorted-map) )
     (utils/toJSON)
     );END: feelin thready
   
