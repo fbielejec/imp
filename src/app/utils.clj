@@ -41,3 +41,11 @@
   );END:great-circle-distance
 
 
+(defn merge-maps [& maps]
+  "Merge map values by keys: {:key [val1 val2 ...]}"
+  (reduce (fn [m1 m2]
+            (reduce (fn [m [k v]]
+                      (update-in m [k] (fnil conj []) v))
+                    m1, m2))
+          {}
+          maps))

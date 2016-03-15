@@ -1,7 +1,20 @@
-(ns newick-parser.core-test
+(ns imp.core-test
   (:require [clojure.test :refer :all]
-            [newick-parser.core :refer :all]))
+            [app.core :refer :all]
+            [app.utils :refer :all]
+            ))
 
-(deftest a-test
-  (testing "FIXME, I fail."
-    (is (= 0 1))))
+(def map1
+{0.0 1, 0.1 3 }
+
+(def map2
+{0.0 2, 0.1 4 }
+  )
+
+(def data (vector map1 map2 ) )
+
+(def merged-map {0.0 [1 2] 0.1 [2 3]  })
+
+(deftest test-merge
+  (testing "merge-maps"
+    (is (= merged-map (apply merge-maps data)))))

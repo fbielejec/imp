@@ -12,9 +12,6 @@
 
 ; (def filename "/home/filip/Dropbox/ClojureProjects/imp/resources/WNV_relaxed_geo_gamma.trees")
 
-;(def xCoordinateName "location2")
-;(def yCoordinateName "location1")
-
 (def coordinateName "location")
 
 (def nSlices 10)
@@ -144,97 +141,80 @@
 (defn getDistances
   "For every slice calculate spatial stats"
   [branchesMap sliceHeights]
-  
-;  (let [sliceHeights (createSliceHeights branchesMap)  ]
-    
-    (reduce
-      (fn [slicesMap sliceHeight ]
+  (reduce
+    (fn [slicesMap sliceHeight ]
+      
+      ;    get the branches  intersected by this slice
+      (let [ branchesSubset ( filterBySlice branchesMap sliceHeight) ]
         
-        ;    get the branches  intersected by this slice
-        (let [ branchesSubset ( filterBySlice branchesMap sliceHeight) ]
+        ;  get the furthest one from root
+        (let [ furthestBranch (getFurthestFromRoot branchesSubset) ]
           
-          ;  get the furthest one from root
-          (let [ furthestBranch (getFurthestFromRoot branchesSubset) ]
+          (let [dist (map :distanceToRoot ( vals furthestBranch) ) length (map :parentHeight ( vals furthestBranch) )  ]
             
-            (let [dist (map :distanceToRoot ( vals furthestBranch) ) length (map :parentHeight ( vals furthestBranch) )  ]
-              
-              (assoc slicesMap sliceHeight {
-                                            :wavefrontDistance (/ (nth dist 0) (nth length 0) )
-                                            } );END: assoc
-              
-              );END:let
+            ;              (assoc slicesMap sliceHeight {
+            ;                                            :wavefrontDistance (/ (nth dist 0) (nth length 0) )
+            ;                                            } );END: assoc
+            
+            (assoc slicesMap sliceHeight   (/ (nth dist 0) (nth length 0) )  );END: assoc
             
             );END:let
+          
           );END:let
-        
-        );END:fn
-      { } ;initial
-      sliceHeights ;coll
-      );END:reduce
-    
-;    );END:let
+        );END:let
+      
+      );END:fn
+    { } ;initial
+    sliceHeights ;coll
+    );END:reduce
   );END: getDistances
 
-; :slice1 {
-;       :wavefront1 [tree1, tree2, ...]
-;       :wavefront2 [tree1, tree2, ...]
-;       ...
-; }
 
-
+; TODO: not sure how memory-efficient importing all is 
 (defn treesLoop
   "Iterate over trees distribution calculating spatial stats"
   []
   (let [sliceHeights (atom nil)]
-    (while (. treeImporter hasTree)
-      (let [currentTree (. treeImporter importNextTree ) ]
+    (reduce
+      (fn [mapsVector currentTree]
+        
         (let [branchesMap (analyzeTree currentTree)  ]
-
-(if (not @sliceHeights)
-  
-    ;rebind sliceHeights  
-    (reset! sliceHeights (createSliceHeights branchesMap)  )
-    
-    ;go about business  
-      (
-    
-    println   ( getDistances branchesMap @sliceHeights)
-    
-    );truthy
-    
- );END:if-let
-
-
+          
+          (if (not @sliceHeights)
+            
+            ;rebind sliceHeights  
+            (do
+              
+              (reset! sliceHeights (createSliceHeights branchesMap)  )
+              
+              (conj mapsVector ( getDistances branchesMap @sliceHeights )   )           
+              
+              );END: do
+            
+            ; go about business
+            (conj mapsVector ( getDistances branchesMap @sliceHeights )  )            
+            
+            );END:if
+          
           );END:let
-        );END:let
-      );END: while
+        
+        );END:fn
+      [];initial
+      (lazy-seq (. treeImporter importTrees ) ) ;coll
+      );END:reduce
     );END:let
-  );END: treesLoop
+  );END:treesLoop
 
 
-
-
-;(defn treesLoop
-;  "Iterate over trees distribution calculating spatial stats"
-;  []
-;  (while (. treeImporter hasTree)
-;    (let [currentTree (. treeImporter importNextTree ) ]
-;      
-;      (let [branchesMap (analyzeTree currentTree) ]
-;        ; (println
-;        
-;        (utils/toJSON
-;          (into (sorted-map)
-;                ( getDistances branchesMap )
-;                );END: sorted-map
-;          );END:toJSON
-;        
-;        ; );END: println
-;        );END:let
-;      
-;      );END:let
-;    );END: while
-;  );END: treesLoop
+(defn getSortedJSON 
+  [mapsVector]
+  
+  (->> mapsVector
+    ( apply utils/merge-maps)
+    (utils/toJSON)
+    );END: feelin thready
+  
+  );END:getSortedJSON
 
 
 (defn -main
@@ -243,7 +223,10 @@
   (do
     
     (time
-      ( treesLoop )
+      
+      (println
+        (getSortedJSON ( treesLoop ) )
+        )
       )
     
     ( println "Done!" )
