@@ -1,24 +1,27 @@
 (ns app.core
   ( :import java.io.FileReader)
   ( :import jebl.evolution.io.NexusImporter)
-  (:require [app.utils :as utils])
+  (:require [app.utils :as u])
+    (:require [app.time :as t])
   )
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;---GLOABL VARIABLES POLLUTING THE NAMESPACE :)---;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;(def filename "/home/filip/Dropbox/ClojureProjects/imp/resources/WNV_small.trees")
+(def filename "/home/filip/Dropbox/ClojureProjects/imp/resources/WNV_small.trees")
 
- (def filename "/home/filip/Dropbox/ClojureProjects/imp/resources/WNV_relaxed_geo_gamma.trees")
+; (def filename "/home/filip/Dropbox/ClojureProjects/imp/resources/WNV_relaxed_geo_gamma.trees")
 
 (def coordinateName "location")
 
 (def outputFilename "/home/filip/Dropbox/JavaScriptProjects/imp-renderer/public/data.json" )
 
-(def nSlices 1000)
+(def nBurninTrees 1 )
 
-(def mrsd 2007.6)
+(def nSlices 10)
+
+(def mrsd 2005.6)
 
 (def importer
   (->>   filename
@@ -30,7 +33,6 @@
 ;;;;;;;;;;;;;;;;;;;;;
 ;;---HERE WE GO!---;;
 ;;;;;;;;;;;;;;;;;;;;;
-
 
 
 (defn getRootCoords [tree]
@@ -48,7 +50,7 @@
   [nodeCoord rootCoord]
   (let [lat1 ( get  nodeCoord 1 ) long1 ( get  nodeCoord 0 ) lat2 ( get  rootCoord 1 ) long2 ( get  rootCoord 0 )]
     
-    (utils/great-circle-distance  lat1 long1 lat2 long2 )
+    (u/great-circle-distance  lat1 long1 lat2 long2 )
     
     );END:let
   );END:getDistanceToRoot
@@ -173,6 +175,7 @@
   );END: getDistances
 
 
+
 (defn extractTrees
   "Make a collection of tree maps"
   [treeImporter]
@@ -185,7 +188,7 @@
       
       );END:fn
     [] ;initial
-    (lazy-seq (. treeImporter importTrees ) ) ;coll
+   (drop nBurninTrees  (lazy-seq (. treeImporter importTrees ) ) );coll
     );END:reduce
   );END: extractTrees
 
@@ -237,7 +240,7 @@
     );END:let
   );END:createSliceHeights
 
-
+; TODO pmap
 (defn treesLoop
   "Go over the collection of tree maps calculating spatial stats
   @return: vector of maps with the same keys"
@@ -266,9 +269,9 @@
   [mapsVector]
   
   (->> mapsVector
-    ( apply utils/merge-maps)
+    ( apply u/merge-maps)
     (into (sorted-map) )
-    (utils/toJSON)
+    (u/toJSON)
     (str )
     );END: feelin thready
   
@@ -282,10 +285,17 @@
     
     (time
       
-      (utils/writeFile 
-        (getSortedJSON (treesLoop importer) )
-        outputFilename
-        )
+      (println
+;      (t/convertToYearMonthDay 2005.5)
+
+(t/getSliceDate)
+
+      )
+      
+;      (u/writeFile 
+;        (getSortedJSON (treesLoop importer) )
+;        outputFilename
+;        )
       
       );END:time
     

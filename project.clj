@@ -9,6 +9,7 @@
   :dependencies [[org.clojure/clojure "1.6.0"]
                  [jebl "0.4"]
                  [org.clojure/data.json "0.2.6"]
+                 [simple-time "0.2.0"]
   ]
   
   :main app.core

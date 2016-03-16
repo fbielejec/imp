@@ -2,6 +2,7 @@
   (:require [clojure.test :refer :all]
             [app.core :refer :all]
             [app.utils :refer :all]
+             [app.time :refer :all]
             ))
 
 (def map1
