@@ -52,15 +52,56 @@
   );END: merge-maps
 
 
-;(defn writeFile
-;  "Write data to file line-by-line"
-;  [data filename]
-;  (with-open [w (clojure.java.io/writer filename)]
-;    (doseq [line data]
-;      (.write w line)
-;      (.newLine w)))
-;  );END: writeFile
-
 (defn writeFile [data filename]
   (with-open [w (clojure.java.io/writer  filename )]
-    (.write w (str data))))
+    (.write w (str data) )
+    );END: with-open
+  );END: writeFile
+
+
+
+(defn update-values 
+  "Applies f To each value of the map "
+  [m f & args]
+  (reduce 
+    (fn [r [k v]] 
+      (assoc r k (apply f v args))
+      );END: fn 
+    {} 
+    m
+    );END: reduce
+  );END:update-values
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

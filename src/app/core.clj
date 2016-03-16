@@ -288,7 +288,7 @@
       (println
 ;      (t/convertToYearMonthDay 2005.5)
 
-(t/getSliceDate)
+(t/getSliceDate 1 (t/parseSimpleDate 2005.5))
 
       )
       

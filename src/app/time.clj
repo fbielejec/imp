@@ -1,7 +1,7 @@
 (ns app.time
   (:require [simple-time.core :as t]  )
   )
-  
+
 ;https://github.com/mbossenbroek/simple-time
 
 (defn getDateFields
@@ -12,9 +12,9 @@
       (let[month  (int (* 12   decimalMonth) ) ]
         (let [day  (-> decimalMonth (* 12 )  (- month )  (* 30 ) (int) ) ]
           {
-           :year  year
-           :month month
-           :day day  ; (if (not= day 0) day 1  )
+           :years  year
+           :months month
+           :days day  ; (if (not= day 0) day 1  )
            }
           )
         )
@@ -27,7 +27,7 @@
   "Return simple date from decimal date"
   [decimalDate]
   (let [dateFields (getDateFields decimalDate) ]
-    (let [year (:year dateFields) month  (:month dateFields) day (:day dateFields) ]
+    (let [year (:years dateFields) month  (:months dateFields) day (:days dateFields) ]
       
       (t/datetime year (if (not= month 0) month 1  ) (if (not= day 0) day 1  ))
       
@@ -39,12 +39,16 @@
 (defn getSliceDate
   "Put a date on a slice height"
   [sliceHeight simpleDate]
-[]
   (let [dateFields  (getDateFields sliceHeight) ]
-      
-;(t/add-years (t/datetime 2005 1 1) -1)
     
-
+    (t/format
+      (-> simpleDate  
+        (t/add-years ( unchecked-negate (:years dateFields))) 
+        (t/add-months( unchecked-negate (:months dateFields))) 
+        (t/add-days ( unchecked-negate (:days dateFields)))   
+        )
+      "YYYY/MM/dd"
+      );END:format
     
     );END:let
   );END: getDate
