@@ -16,18 +16,19 @@
 
 (def nSlices 11)
 
-(def mrsd 2007.3)
+(def mrsd 2007.6)
 
-;;;;;;;;;;;;;;;;;;;;;
-;;---HERE WE GO!---;;
-;;;;;;;;;;;;;;;;;;;;;
-
-(def treeImporter
+(def importer
   (->>   filename
     (new FileReader )
     (new NexusImporter )
     );END: thread last
   );END: treeImporter
+
+;;;;;;;;;;;;;;;;;;;;;
+;;---HERE WE GO!---;;
+;;;;;;;;;;;;;;;;;;;;;
+
 
 
 (defn getRootCoords [tree]
@@ -138,31 +139,31 @@
   );END: getFurthestFromRoot
 
 
+; TODO
 (defn getDistances
   "For every slice calculate spatial stats"
   [branchesMap sliceHeights]
   (reduce
     (fn [slicesMap sliceHeight ]
-      
-      ;    get the branches  intersected by this slice
+      ; get the branches  intersected by this slice
       (let [ branchesSubset ( filterBySlice branchesMap sliceHeight) ]
-        
-        ;  get the furthest one from root
-        (let [ furthestBranch (getFurthestFromRoot branchesSubset) ]
+        (if (>(count branchesSubset) 0)
           
-          (let [dist (map :distanceToRoot ( vals furthestBranch) ) length (map :parentHeight ( vals furthestBranch) )  ]
-            
-            ;              (assoc slicesMap sliceHeight {
-            ;                                            :wavefrontDistance (/ (nth dist 0) (nth length 0) )
-            ;                                            } );END: assoc
-            
-            (assoc slicesMap sliceHeight   (/ (nth dist 0) (nth length 0) )  );END: assoc
-            
+          ;  get the furthest one from root
+          (let [ furthestBranch (getFurthestFromRoot branchesSubset) ]
+            (let [dist (map :distanceToRoot ( vals furthestBranch) ) length (map :parentHeight ( vals furthestBranch) )  ]
+              
+              (assoc slicesMap sliceHeight (nth dist 0)
+                     );END: assoc
+              
+              );END:let
             );END:let
           
-          );END:let
-        );END:let
-      
+          (assoc slicesMap sliceHeight  0.0  
+                 );END: assoc
+          
+          );END:if
+        );let
       );END:fn
     { } ;initial
     sliceHeights ;coll
@@ -170,40 +171,93 @@
   );END: getDistances
 
 
-; TODO: not sure how memory-efficient importing all is 
-(defn treesLoop
-  "Iterate over trees distribution calculating spatial stats"
-  []
-  (let [sliceHeights (atom nil)]
-    (reduce
-      (fn [mapsVector currentTree]
-        
-        (let [branchesMap (analyzeTree currentTree)  ]
-          
-          (if (not @sliceHeights)
-            
-            ;rebind sliceHeights  
-            (do
-              
-              (reset! sliceHeights (createSliceHeights branchesMap)  )
-              
-              (conj mapsVector ( getDistances branchesMap @sliceHeights )   )           
-              
-              );END: do
-            
-            ; go about business
-            (conj mapsVector ( getDistances branchesMap @sliceHeights )  )            
-            
-            );END:if
-          
-          );END:let
-        
-        );END:fn
-      [];initial
-      (lazy-seq (. treeImporter importTrees ) ) ;coll
-      );END:reduce
+(defn extractTrees
+  "Make a collection of tree maps"
+  [treeImporter]
+  (reduce
+    (fn [treeMaps currentTree]
+      
+      (conj treeMaps
+            ( analyzeTree currentTree )
+            ); END:conj
+      
+      );END:fn
+    [] ;initial
+    (lazy-seq (. treeImporter importTrees ) ) ;coll
+    );END:reduce
+  );END: extractTrees
+
+
+(defn getMaxParentHeight
+  "Go over the collection of tree maps and return max height"
+  [treeMaps]
+  ;  (let [mapsVector (extractTrees treeImporter) ]
+  (apply max    
+         (map (fn[head & tail]
+                (apply max (map :parentHeight (vals head)  ) )
+                )
+              treeMaps
+              );END: apply
+         );END:apply  
+  ;    );END:let
+  );END: getMaxParentHeight
+
+
+(defn getMinNodeHeight
+  "Go over the collection of tree maps and return min height"
+  [treeMaps]
+  ;  (let [mapsVector (extractTrees treeImporter) ]
+  (apply min    
+         (map (fn[head & tail]
+                (apply min (map :nodeHeight (vals head)  ) )
+                )
+              treeMaps
+              );END: apply
+         );END:apply  
+  ;    );END:let
+  );END: getMinNodeHeight
+
+
+(defn createSliceHeights
+  "Create a uniform sequence of length nSlices with slice heights"
+  [nSlices treeMaps]
+  (let [ minim (getMinNodeHeight treeMaps) maxim (getMaxParentHeight treeMaps) interval (/ maxim nSlices ) ]
+    
+    ;(range (+ minim by) maxim by)
+    
+    (loop [i 0 timeSlices []]
+      (if (< i nSlices)
+        (recur (inc i) (conj timeSlices (- maxim (* interval i) ) ) )
+        timeSlices
+        );END: if
+      );END: loop
+    
     );END:let
-  );END:treesLoop
+  );END:createSliceHeights
+
+
+(defn treesLoop
+  "Go over the collection of tree maps calculating spatial stats
+  @return: vector of maps with the same keys"
+  [treeImporter]
+  (let [treeMaps (extractTrees treeImporter)]
+    (let [sliceHeights (createSliceHeights nSlices treeMaps)]
+      
+      (reduce
+        (fn [mapsVector branchesMap]
+          
+          (conj mapsVector 
+                ( getDistances branchesMap sliceHeights )  
+                )    
+          
+          );END:fn
+        []; initial
+        treeMaps; coll
+        );END:reduce
+      
+      );END: let
+    );END: let
+  );END: treesLoop
 
 
 (defn getSortedJSON 
@@ -224,9 +278,12 @@
   (do
     
     (time
-      
       (println
-        (getSortedJSON ( treesLoop ) )
+        
+        (getSortedJSON
+          (treesLoop importer)
+          )
+        
         )
       )
     
