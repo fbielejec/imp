@@ -48,4 +48,19 @@
                       (update-in m [k] (fnil conj []) v))
                     m1, m2))
           {}
-          maps))
+          maps)
+  );END: merge-maps
+
+
+;(defn writeFile
+;  "Write data to file line-by-line"
+;  [data filename]
+;  (with-open [w (clojure.java.io/writer filename)]
+;    (doseq [line data]
+;      (.write w line)
+;      (.newLine w)))
+;  );END: writeFile
+
+(defn writeFile [data filename]
+  (with-open [w (clojure.java.io/writer  filename )]
+    (.write w (str data))))

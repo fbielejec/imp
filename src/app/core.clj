@@ -8,13 +8,15 @@
 ;;---GLOABL VARIABLES POLLUTING THE NAMESPACE :)---;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(def filename "/home/filip/Dropbox/ClojureProjects/imp/resources/WNV_small.trees")
+;(def filename "/home/filip/Dropbox/ClojureProjects/imp/resources/WNV_small.trees")
 
-; (def filename "/home/filip/Dropbox/ClojureProjects/imp/resources/WNV_relaxed_geo_gamma.trees")
+ (def filename "/home/filip/Dropbox/ClojureProjects/imp/resources/WNV_relaxed_geo_gamma.trees")
 
 (def coordinateName "location")
 
-(def nSlices 11)
+(def outputFilename "/home/filip/Dropbox/JavaScriptProjects/imp-renderer/public/data.json" )
+
+(def nSlices 1000)
 
 (def mrsd 2007.6)
 
@@ -267,6 +269,7 @@
     ( apply utils/merge-maps)
     (into (sorted-map) )
     (utils/toJSON)
+    (str )
     );END: feelin thready
   
   );END:getSortedJSON
@@ -278,14 +281,13 @@
   (do
     
     (time
-      (println
-        
-        (getSortedJSON
-          (treesLoop importer)
-          )
-        
+      
+      (utils/writeFile 
+        (getSortedJSON (treesLoop importer) )
+        outputFilename
         )
-      )
+      
+      );END:time
     
     ( println "Done!" )
     
