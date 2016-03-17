@@ -1,8 +1,9 @@
 (ns app.core
   ( :import java.io.FileReader)
   ( :import jebl.evolution.io.NexusImporter)
+  ;  (:import clojure.set)
   (:require [app.utils :as u])
-    (:require [app.time :as t])
+  (:require [app.time :as t])
   )
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -188,7 +189,7 @@
       
       );END:fn
     [] ;initial
-   (drop nBurninTrees  (lazy-seq (. treeImporter importTrees ) ) );coll
+    (drop nBurninTrees  (lazy-seq (. treeImporter importTrees ) ) );coll
     );END:reduce
   );END: extractTrees
 
@@ -265,43 +266,64 @@
   );END: treesLoop
 
 
-(defn getSortedJSON 
-  [mapsVector]
+;  https://clojuredocs.org/clojure.set/rename-keys
+;(rename-keys {:a 1, :b 2} {:a :new-a, :b :new-b})
+;{:new-a 1, :new-b 2}
+;TODO
+(defn dateize-keys
+  "transforms map keys to date strings"
+  [m]
+  (let [endDate (t/parseSimpleDate mrsd)]
+    (letfn [(getDate [k] (t/getSliceDate k endDate) ) ]
+      (reduce
+        (fn[km k]
+          
+          (assoc km (getDate k) (get m k) )    
+          
+          );fn
+        { };initial
+        (keys m) ;coll
+        );END: letfb
+      );END:let
+    );END:dateize-keys
   
-  (->> mapsVector
-    ( apply u/merge-maps)
-    (into (sorted-map) )
-    (u/toJSON)
-    (str )
-    );END: feelin thready
   
-  );END:getSortedJSON
-
-
-(defn -main
-  "Entry point"
-  [& args]
-  (do
+  (defn getNiceJSON 
+    [mapsVector]
     
-    (time
+    (->> mapsVector
+      ( apply u/merge-maps)
+      (dateize-keys )
+      (into (sorted-map) )
+      (u/toJSON)
+      (str )
+      );END: feelin thready
+    
+    );END:getSortedJSON
+  
+  
+  (defn -main
+    "Entry point"
+    [& args]
+    (do
       
-      (println
-;      (t/convertToYearMonthDay 2005.5)
-
-(t/getSliceDate 1 (t/parseSimpleDate 2005.5))
-
-      )
+      (time
+        
+        ;      (println
+        
+        (u/writeFile 
+          (getNiceJSON (treesLoop importer) )
+          outputFilename
+          )
+        
+        ;      )
+        
+        );END:time
       
-;      (u/writeFile 
-;        (getSortedJSON (treesLoop importer) )
-;        outputFilename
-;        )
+      ( println "Done!" )
       
-      );END:time
-    
-    ( println "Done!" )
-    
-    ( System/exit 0 )
-    
-    );END;do
-  );END: main
+      ( System/exit 0 )
+      
+      );END;do
+    );END: main
+  
