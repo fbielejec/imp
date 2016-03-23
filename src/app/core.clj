@@ -143,7 +143,6 @@
   );END: getFurthestFromRoot
 
 
-; TODO
 (defn getDistances
   "For every slice calculate spatial stats"
   [branchesMap sliceHeights]
@@ -240,7 +239,7 @@
     );END:let
   );END:createSliceHeights
 
-; TODO pmap
+; TODO: refactor to use pmap over treeMaps collection
 (defn treesLoop
   "Go over the collection of tree maps calculating spatial stats
   @return: vector of maps with the same keys"
@@ -265,10 +264,6 @@
   );END: treesLoop
 
 
-;  https://clojuredocs.org/clojure.set/rename-keys
-;(rename-keys {:a 1, :b 2} {:a :new-a, :b :new-b})
-;{:new-a 1, :new-b 2}
-;TODO
 (defn dateize-keys
   "transforms map keys to date strings"
   [m]
@@ -287,18 +282,29 @@
     );END:dateize-keys
   
   
-  (defn getNiceJSON 
-    [mapsVector]
+  (defn format-data
+    "format the data to conform to JSON format ready for D3 plotting"
+    [data]
     
-    (->> mapsVector
-      ( apply u/merge-maps)
-      (dateize-keys )
-      (into (sorted-map) )
-      (u/toJSON)
-      (str )
-      );END: feelin thready
+    ;TODO
+    data
     
-    );END:getSortedJSON
+    );END: format-data
+  
+  
+;  (defn getNiceJSON 
+;    "Thread functions to return JSON format ready for D3 plotting"
+;    [mapsVector]
+;    
+;    (->> mapsVector
+;      ( apply u/merge-maps)
+;      (dateize-keys )
+;      (into (sorted-map) )
+;      (u/toJSON)
+;      (str )
+;      );END: feelin thready
+;    
+;    );getNiceJSON
   
   
   (defn -main
@@ -311,7 +317,8 @@
         ;      (println
         
         (u/writeFile 
-          (getNiceJSON (treesLoop importer) )
+          ;          (getNiceJSON (treesLoop importer) )
+          (format-data (treesLoop importer))
           outputFilename
           )
         
