@@ -9,7 +9,7 @@
   (:require [ring.util.response :as response] )
   (:require [compojure.route :as route] )
   (:require [imp-rest.settings :as s] )
-  
+  (:require [imp-rest.data :as d] )
   )
 
 
@@ -30,7 +30,7 @@
   
  ; TODO: routes
  
-   (GET "/count-up/:to" [to] (str-to (Integer. to)))
+;   (GET "/count-up/:to" [to] (str-to (Integer. to)))
  
   (GET "/settings" []
        (json-response (s/get-settings)))
@@ -38,10 +38,12 @@
     (GET "/settings/:id" [id]
        (json-response (s/get-setting id)))
   
-    ; TODO : fix
     (PUT "/settings" [id value]
        (json-response (s/put-setting id value)))
-  
+
+    (GET "/data" [] (d/get-data) )   
+    
+    
   (route/not-found "Page not found")
 
   );END:defroutes

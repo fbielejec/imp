@@ -12,6 +12,7 @@
    [ring/ring-json "0.4.0"]
    [ring/ring-jetty-adapter "1.4.0"]
    [ring-json-params "0.1.3"]
+   [ring/ring-mock "0.3.0"]
    [clj-json "0.5.3"]
    [org.clojure/data.json "0.2.6"]
    [simple-time "0.2.0"]

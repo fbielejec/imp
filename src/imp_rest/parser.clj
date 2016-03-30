@@ -273,18 +273,41 @@
     );END: let
   );END: treesLoop
 
+(defn dateize-keys
+  "transforms map keys to date strings"
+  [m ]
+  (let [endDate (t/parseSimpleDate (s/get-setting :mrsd) )]
+    (letfn [(getDate [k] (t/getSliceDate k endDate) ) ]
+      (reduce
+        (fn[km k]
+          
+          (assoc km (getDate k) (get m k) )    
+          
+          );fn
+        { };initial
+        (keys m) ;coll
+        );END:reduce
+      );END: letfn
+    );END:let
+  );END:dateize-keys
+
 (defn format-data
   "format the data to conform to JSON format ready for D3 plotting"
-  [data]
+  [mapsVector]
   
-  ;TODO
-  data
+    (->> mapsVector
+      ( apply u/merge-maps)
+      (dateize-keys )
+      (into (sorted-map) )
+;      (u/toJSON)
+;      (str )
+      );END: feelin thready
   
   );END: format-data
 
 
 
-(defn parse-to-json
+(defn parse-data
   "Parse, analyze and return formatted JSON, ready for plotting in frontend"
   [ ]
   (let [settings (s/get-settings)]
