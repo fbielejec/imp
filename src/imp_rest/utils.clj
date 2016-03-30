@@ -1,13 +1,18 @@
-(ns app.utils
+;;
+;;---@fbielejec
+;;
+
+(ns imp-rest.utils
   (:require [clojure.pprint :refer (pprint)]  )
   (:require [clojure.data.json :as json] )
+  (:require [imp-rest.time :as t])
   )
 
 
 (defn printHashMap [hashMap]
   "Pretty-prints a hashmap"
   
-  (clojure.pprint/write hashMap) ; :stream nil)
+  (clojure.pprint/write hashMap)
   
   );END: printHashMap
 
@@ -59,7 +64,6 @@
   );END: writeFile
 
 
-
 (defn update-values 
   "Applies f To each value of the map "
   [m f & args]
@@ -73,28 +77,23 @@
   );END:update-values
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+(defn dateize-keys
+  "transforms map keys to date strings"
+  [m settings]
+  (let [endDate (t/parseSimpleDate (:mrsd settings) )]
+    (letfn [(getDate [k] (t/getSliceDate k endDate) ) ]
+      (reduce
+        (fn[km k]
+          
+          (assoc km (getDate k) (get m k) )    
+          
+          );fn
+        { };initial
+        (keys m) ;coll
+        );END:reduce
+      );END: letfn
+    );END:let
+  );END:dateize-keys
 
 
 

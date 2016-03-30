@@ -1,45 +1,25 @@
-(ns app.core
-  ( :import java.io.FileReader)
-  ( :import jebl.evolution.io.NexusImporter)
-  (:require [app.utils :as u])
-  (:require [app.time :as t])
+;;
+;;---@fbielejec
+;;
+
+(ns imp-rest.parser
+  (:import java.io.FileReader)
+  (:import jebl.evolution.io.NexusImporter)
+  (:require [imp-rest.settings :as s])
+  (:require [imp-rest.utils :as u])
+  (:require [imp-rest.time :as t])
   )
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;---GLOABL VARIABLES POLLUTING THE NAMESPACE :)---;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(def filename "/home/filip/Dropbox/ClojureProjects/imp/resources/WNV_small.trees")
+;;;;;;;;;;;;;;;;;;;;;;;
+;;---PARSE TO JSON---;;
+;;;;;;;;;;;;;;;;;;;;;;;
 
-; (def filename "/home/filip/Dropbox/ClojureProjects/imp/resources/WNV_relaxed_geo_gamma.trees")
-
-(def coordinateName "location")
-
-(def outputFilename "/home/filip/Dropbox/JavaScriptProjects/imp-renderer/public/data.json" )
-
-(def nBurninTrees 1 )
-
-(def nSlices 10)
-
-(def mrsd 2005.6)
-
-(def importer
-  (->>   filename
-    (new FileReader )
-    (new NexusImporter )
-    );END: thread last
-  );END: treeImporter
-
-;;;;;;;;;;;;;;;;;;;;;
-;;---HERE WE GO!---;;
-;;;;;;;;;;;;;;;;;;;;;
-
-
-(defn getRootCoords [tree]
+(defn getRootCoords [tree settings]
   "Returns root coordinate attribute values"
   (let  [rootNode (. tree getRootNode ) ]
     
-    ( . rootNode getAttribute coordinateName )
+    ( . rootNode getAttribute (:coordinateName settings) )
     
     );END:let
   );END: getRootCoords
@@ -48,7 +28,7 @@
 (defn getDistanceToRoot
   "Returns great-cricle-distance distance between two coordinates"
   [nodeCoord rootCoord]
-  (let [lat1 ( get  nodeCoord 1 ) long1 ( get  nodeCoord 0 ) lat2 ( get  rootCoord 1 ) long2 ( get  rootCoord 0 )]
+  (let [lat1 ( get  nodeCoord 1 ) long1 ( get  nodeCoord 0 ) lat2 ( get  rootCoord 1 ) long2 ( get rootCoord 0 )]
     
     (u/great-circle-distance  lat1 long1 lat2 long2 )
     
@@ -56,27 +36,27 @@
   );END:getDistanceToRoot
 
 
-; :node001 {:startX 0.1 :startY 0.3 :endX 0.5 :endY 0.4 :length 0.71 }
 (defn analyzeTree
   "Represents tree as a map of branches (node-parent pairs):
    :node001 {:startX 0.1 :startY 0.3 :endX 0.5 :endY 0.4 :length 0.71 }
    key is a node which represents the branch, value is a map of attributes we need later"
-  [tree]
+  [tree settings]
   
   (into {}
         
-        (let [nodes (into #{}  (. tree getNodes )) rootCoord (getRootCoords tree) ]
+        (let [nodes (into #{}  (. tree getNodes )) rootCoord (getRootCoords tree settings) ]
           
           (map  (fn [node]
                   (if  ( not (. tree isRoot node))
                     (let [parentNode (. tree getParent node)]
-                      (let [nodeCoord ( . node getAttribute coordinateName ) parentCoord ( . parentNode getAttribute coordinateName ) ]
+                      (let [nodeCoord ( . node getAttribute (:coordinateName settings) ) parentCoord ( . parentNode getAttribute (:coordinateName settings) ) ]
                         
+                        ; :node001 {:startX 0.1 :startY 0.3 :endX 0.5 :endY 0.4 :length 0.71 }                        
                         (hash-map node {
-                                        :startX ( get  parentCoord 0 ) ; parent long
-                                        :startY ( get  parentCoord 1 ) ;parent lat
-                                        :endX  ( get  nodeCoord 0 ); long
-                                        :endY  ( get  nodeCoord 1 ) ; lat
+                                        :startX ( get parentCoord 0 ) ; parent long
+                                        :startY ( get parentCoord 1 ) ;parent lat
+                                        :endX ( get nodeCoord 0 ); long
+                                        :endY ( get nodeCoord 1 ) ; lat
                                         :nodeHeight (. tree getHeight node)
                                         :parentHeight (. tree getHeight parentNode)
                                         :distanceToRoot (getDistanceToRoot nodeCoord rootCoord)
@@ -95,18 +75,18 @@
 
 
 (defn getMinStartTime [branchesMap]
-  (apply min (map :nodeHeight (vals branchesMap)  ) )
+  (apply min (map :nodeHeight (vals branchesMap) ) )
   );END: getMinStartTime
 
 
 (defn getMaxStartTime [branchesMap]
-  (apply max (map :nodeHeight (vals branchesMap)  ) )
+  (apply max (map :nodeHeight (vals branchesMap) ) )
   );END: getMaxStartTime
 
 
-(defn createSliceHeights [branchesMap]
+(defn createSliceHeights [branchesMap settings]
   "Returns a sequence of length nSlices"
-  (let [ minim (getMinStartTime branchesMap) maxim (getMaxStartTime branchesMap) by (/ ( - maxim minim)  nSlices ) ]
+  (let [ minim (getMinStartTime branchesMap) maxim (getMaxStartTime branchesMap) by (/ ( - maxim minim)  (:nslices settings) ) ]
     
     (range minim maxim by)
     
@@ -150,7 +130,7 @@
     (fn [slicesMap sliceHeight ]
       ; get the branches  intersected by this slice
       (let [ branchesSubset ( filterBySlice branchesMap sliceHeight) ]
-        (if (>(count branchesSubset) 0)
+        (if ( > (count branchesSubset) 0)
           
           ;  get the furthest one from root
           (let [ furthestBranch (getFurthestFromRoot branchesSubset) ]
@@ -175,27 +155,57 @@
 
 
 
+;(def filename "/home/filip/Dropbox/ClojureProjects/imp/resources/WNV_small.trees" )
+;
+;(def importer
+;  (->> filename
+;    (new FileReader )
+;    (new NexusImporter )
+;    );END: thread last
+;  );END: treeImporter
+
+
+(defn createTreeImporter
+  ""
+  [settings]
+  (let [ filename (:filename settings)]
+
+(println
+ "name: " filename
+  )
+
+    
+    (->> filename
+      (new FileReader )
+      (new NexusImporter )
+      );END: thread last
+    
+    );END:let
+  );END:createTreeImporter
+
+
 (defn extractTrees
   "Make a collection of tree maps"
-  [treeImporter]
-  (reduce
-    (fn [treeMaps currentTree]
-      
-      (conj treeMaps
-            ( analyzeTree currentTree )
-            ); END:conj
-      
-      );END:fn
-    [] ;initial
-    (drop nBurninTrees  (lazy-seq (. treeImporter importTrees ) ) );coll
-    );END:reduce
+  [ settings]
+  (let [treeImporter (createTreeImporter settings) ]
+    (reduce
+      (fn [treeMaps currentTree]
+        
+        (conj treeMaps
+              ( analyzeTree currentTree settings)
+              ); END:conj
+        
+        );END:fn
+      [] ;initial
+      (drop (:burnin settings)  (lazy-seq (. treeImporter importTrees ) ) );coll
+      );END:reduce
+    );END:let
   );END: extractTrees
 
 
 (defn getMaxParentHeight
   "Go over the collection of tree maps and return max height"
   [treeMaps]
-  ;  (let [mapsVector (extractTrees treeImporter) ]
   (apply max    
          (map (fn[head & tail]
                 (apply max (map :parentHeight (vals head)  ) )
@@ -203,14 +213,12 @@
               treeMaps
               );END: apply
          );END:apply  
-  ;    );END:let
   );END: getMaxParentHeight
 
 
 (defn getMinNodeHeight
   "Go over the collection of tree maps and return min height"
   [treeMaps]
-  ;  (let [mapsVector (extractTrees treeImporter) ]
   (apply min    
          (map (fn[head & tail]
                 (apply min (map :nodeHeight (vals head)  ) )
@@ -218,19 +226,16 @@
               treeMaps
               );END: apply
          );END:apply  
-  ;    );END:let
   );END: getMinNodeHeight
 
 
 (defn createSliceHeights
-  "Create a uniform sequence of length nSlices with slice heights"
-  [nSlices treeMaps]
-  (let [ minim (getMinNodeHeight treeMaps) maxim (getMaxParentHeight treeMaps) interval (/ maxim nSlices ) ]
-    
-    ;(range (+ minim by) maxim by)
+  "Create a uniform sequence of length nslices with slice heights"
+  [ treeMaps settings]
+  (let [ minim (getMinNodeHeight treeMaps) maxim (getMaxParentHeight treeMaps) interval (/ maxim (:nslices settings) ) ]
     
     (loop [i 0 timeSlices []]
-      (if (< i nSlices)
+      (if (< i (:nslices settings))
         (recur (inc i) (conj timeSlices (- maxim (* interval i) ) ) )
         timeSlices
         );END: if
@@ -239,97 +244,62 @@
     );END:let
   );END:createSliceHeights
 
+
+
+
+
+
+
+
+
 ; TODO: refactor to use pmap over treeMaps collection
 (defn treesLoop
   "Go over the collection of tree maps calculating spatial stats
   @return: vector of maps with the same keys"
-  [treeImporter]
-  (let [treeMaps (extractTrees treeImporter)]
-    (let [sliceHeights (createSliceHeights nSlices treeMaps)]
-      
-      (reduce
-        (fn [mapsVector branchesMap]
-          
-          (conj mapsVector 
-                ( getDistances branchesMap sliceHeights )  
-                )    
-          
-          );END:fn
-        []; initial
-        treeMaps; coll
-        );END:reduce
-      
-      );END: let
+  [ settings]
+  (let [treeMaps (extractTrees settings) sliceHeights (createSliceHeights treeMaps settings)]
+    
+    (reduce
+      (fn [mapsVector branchesMap]
+        
+        (conj mapsVector 
+              ( getDistances branchesMap sliceHeights )  
+              )    
+        
+        );END:fn
+      []; initial
+      treeMaps; coll
+      );END:reduce
     );END: let
   );END: treesLoop
 
+(defn format-data
+  "format the data to conform to JSON format ready for D3 plotting"
+  [data]
+  
+  ;TODO
+  data
+  
+  );END: format-data
 
-(defn dateize-keys
-  "transforms map keys to date strings"
-  [m]
-  (let [endDate (t/parseSimpleDate mrsd)]
-    (letfn [(getDate [k] (t/getSliceDate k endDate) ) ]
-      (reduce
-        (fn[km k]
-          
-          (assoc km (getDate k) (get m k) )    
-          
-          );fn
-        { };initial
-        (keys m) ;coll
-        );END: letfb
-      );END:let
-    );END:dateize-keys
-  
-  
-  (defn format-data
-    "format the data to conform to JSON format ready for D3 plotting"
-    [data]
+
+
+(defn parse-to-json
+  "Parse, analyze and return formatted JSON, ready for plotting in frontend"
+  [settings]
+;  (let [settings s/settings]
+
+    ( format-data 
+      (treesLoop settings) 
+      )
+   
     
-    ;TODO
-    data
-    
-    );END: format-data
-  
-  
-;  (defn getNiceJSON 
-;    "Thread functions to return JSON format ready for D3 plotting"
-;    [mapsVector]
-;    
-;    (->> mapsVector
-;      ( apply u/merge-maps)
-;      (dateize-keys )
-;      (into (sorted-map) )
-;      (u/toJSON)
-;      (str )
-;      );END: feelin thready
-;    
-;    );getNiceJSON
-  
-  
-  (defn -main
-    "Entry point"
-    [& args]
-    (do
-      
-      (time
-        
-        ;      (println
-        
-        (u/writeFile 
-          ;          (getNiceJSON (treesLoop importer) )
-          (format-data (treesLoop importer))
-          outputFilename
-          )
-        
-        ;      )
-        
-        );END:time
-      
-      ( println "Done!" )
-      
-      ( System/exit 0 )
-      
-      );END;do
-    );END: main
-  
+;    );END:let
+  );END:parse
+
+
+
+
+
+
+

@@ -15,3 +15,5 @@ pom.xml.asc
 bin/
 resources/WNV.trees
 WNV_relaxed_geo_gamma.trees
+maven_repository/jebl/
+maven_repository/local/

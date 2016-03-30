@@ -5,17 +5,21 @@
 ABSOLUTE_PATH="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/$(basename "${BASH_SOURCE[0]}")"
 
 if [ -d maven_repository ]; then
-    echo "dir exists"
+
+#wget 'https://sourceforge.net/projects/jebl/files/jebl/jebl-0.4/jebl-0.4.jar'
+#mv jebl-0.4.jar maven_repository/
+
+#mvn install:install-file -Dfile=$ABSOLUTE_PATH/maven_repository/jebl-0.4.jar -DartifactId=jebl -Dversion=0.4 -DgroupId=jebl -Dpackaging=jar -DlocalRepositoryPath=maven_repository
+
+
+mvn deploy:deploy-file -DgroupId=jebl -DartifactId=jebl \
+  -Dversion=0.4 -Dpackaging=jar -Dfile=jebl-0.4.jar \
+  -Durl=file:maven_repository
+
 else 
-	mkdir maven_repository 
+
+echo "No maven_repository on " $ABSOLUTE_PATH
+
 fi
-
-wget 'https://sourceforge.net/projects/jebl/files/jebl/jebl-0.4/jebl-0.4.jar'
-
-mv jebl-0.4.jar maven_repository/
-
-echo $ABSOLUTE_PATH
-
-mvn install:install-file -Dfile=$ABSOLUTE_PATH/jebl-0.4.jar -DartifactId=jebl -Dversion=0.4 -DgroupId=jebl -Dpackaging=jar -DlocalRepositoryPath=maven_repository
 
 exit $?
