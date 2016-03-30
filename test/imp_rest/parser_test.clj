@@ -30,15 +30,15 @@
              (s/put-setting :nslices 10)
              (s/put-setting :mrsd 2005.3)
              
-             (let [settings (s/get-settings)]
+;             (let [settings (s/get-settings)]
              
                (println
-                  (p/parse-to-json settings)
+                  (p/parse-to-json )
                  )
              
              (is (= 1 1) )       
              
-             );END:let
+;             );END:let
              
            );END: testing
   );END: test-parser

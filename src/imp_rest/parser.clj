@@ -286,15 +286,15 @@
 
 (defn parse-to-json
   "Parse, analyze and return formatted JSON, ready for plotting in frontend"
-  [settings]
-;  (let [settings s/settings]
+  [ ]
+  (let [settings (s/get-settings)]
 
     ( format-data 
       (treesLoop settings) 
       )
    
     
-;    );END:let
+    );END:let
   );END:parse
 
 

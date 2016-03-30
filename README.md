@@ -8,13 +8,17 @@ lein run
 
 Point browser to http://localhost:8080/
 
-### Settings
+### Dev
+
+lein test
+
+(require '[imp-rest.parser :as p])
 
 (require '[imp-rest.settings :as s])
 
-(s/put-setting :coordinateName 'location')
+(s/put-setting :coordinateName 'location') ; or ./test_rest
 
-(s/list-settings )
+(p/parse-to-json )
 
 ## License
 
