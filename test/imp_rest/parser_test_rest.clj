@@ -5,30 +5,33 @@
 (ns imp-rest.parser-test-rest
   (:require [clojure.test :refer :all])
   (:require  [ring.mock.request :as mock] )
-    (:require [imp-rest.web :as w])
-
-    ;  (:require [imp-rest.settings :as s])
-;  (:require [imp-rest.parser :as p])
+  (:require [clj-json.core :as json] )
+  (:require [imp-rest.web :as w])
   
-)
+  (:require [imp-rest.settings :as s])
+  ;  (:require [imp-rest.parser :as p])
+  
+  )
 
 (deftest test-parser-rest
   
   (testing "put settings"
-
-      (let [response (w/app (mock/request :get "/settings"))]
-      
-        (println 
-          response
-          )
-        
-      );END:let
            
+           (w/app 
+             (mock/request :put "/settings/coordinateName" "FOO" )
+             )
            
-               (is (= 1 1) )   
+           (let [response (w/app (mock/request :get "/settings"))]
+             
+             (println 
+               response
+               )
+             
+             (is (=  (get (:body response) :coordinateName) "FOO") )  
+             
+             );END:let
            
-    );END: put settings test
-  
+           );END: put settings test
   
   );END:rest test
 
