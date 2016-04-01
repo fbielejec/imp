@@ -62,8 +62,8 @@
   (testing "get results"
            (let [response (w/app (mock/request :get "/data"))]
              
-                 (println 
-                 response)
+             (println 
+               response)
              
              (is (= 1 1))               
              

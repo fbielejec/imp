@@ -11,7 +11,7 @@
   (:require [compojure.route :as route] )
   (:require [imp-rest.settings :as s] )
   (:require [imp-rest.data :as d] )
-    (:require [imp-rest.parser :as p])
+  (:require [imp-rest.parser :as p])
   )
 
 
@@ -24,13 +24,7 @@
   );END:json-response
 
 
-;(defn- str-to [num]
-;  (apply str (interpose ", " (range 1 (inc num)))))
-
-
 (defroutes handler
-  
-  ;   (GET "/count-up/:to" [to] (str-to (Integer. to)))
   
   (GET "/settings" []
        (json-response (s/get-settings)))
@@ -41,7 +35,8 @@
   (PUT "/settings" [id value]
        (json-response (s/put-setting id value)))
   
-  (GET "/data" []     (json-response  (p/parse-data ) ) )   
+  (GET "/data" [] 
+       (json-response  (p/parse-data )))   
   
   (route/not-found "Page not found")
   
@@ -50,7 +45,7 @@
 
 (def app
   (-> handler
-;    wrap-params
+    ;    wrap-params
     wrap-json-params)
   )
 

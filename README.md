@@ -12,14 +12,6 @@ Point browser to http://localhost:8080/
 
 lein test
 
-(require '[imp-rest.parser :as p])
-
-(require '[imp-rest.settings :as s])
-
-(s/put-setting :coordinateName 'location') ; or ./test_rest
-
-(p/parse-to-json )
-
 ## License
 
 Copyright © 2016 @fbielejec

@@ -3,7 +3,6 @@
 ;;
 
 (ns imp-rest.settings
-  
   )
 
 (def settings 
@@ -14,20 +13,15 @@
      :burnin nil
      :nslices nil
      :mrsd nil
-     }
-    )
-  )
+     }))
 
 (defn get-settings []
-  @settings
-  );END:list
+  @settings)
 
 (defn get-setting [id]
-  (@settings (keyword id))
-  );END:get-setting
+  (@settings (keyword id)))
 
 (defn put-setting [id value]
   (swap! settings assoc (keyword id) value)
-  value
-  );END: put-setting
+  value)
 

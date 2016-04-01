@@ -248,25 +248,45 @@
 
 
 ; TODO: refactor to use pmap over treeMaps collection
+;(defn treesLoop
+;  "Go over the collection of tree maps calculating spatial stats
+;  @return: vector of maps with the same keys"
+;  [ settings]
+;  (let [treeMaps (extractTrees settings) sliceHeights (createSliceHeights treeMaps settings)]
+;    
+;    (reduce
+;      (fn [mapsVector branchesMap]
+;        
+;        (conj mapsVector 
+;              ( getDistances branchesMap sliceHeights )  
+;              )    
+;        
+;        );END:fn
+;      []; initial
+;      treeMaps; coll
+;      );END:reduce
+;    );END: let
+;  );END: treesLoop
+
+
 (defn treesLoop
   "Go over the collection of tree maps calculating spatial stats
   @return: vector of maps with the same keys"
   [ settings]
+  
   (let [treeMaps (extractTrees settings) sliceHeights (createSliceHeights treeMaps settings)]
     
-    (reduce
-      (fn [mapsVector branchesMap]
-        
-        (conj mapsVector 
-              ( getDistances branchesMap sliceHeights )  
-              )    
-        
-        );END:fn
-      []; initial
-      treeMaps; coll
-      );END:reduce
+    (into []
+          (pmap (fn[treeMap] 
+                  ( getDistances treeMap sliceHeights 
+                                 ))
+               treeMaps))
     );END: let
+  
   );END: treesLoop
+
+
+
 
 (defn dateize-keys
   "transforms map keys to date strings"
