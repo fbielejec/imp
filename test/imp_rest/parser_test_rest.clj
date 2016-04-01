@@ -11,37 +11,63 @@
   
   )
 
-(defn rf ([] {}) ([acc [k v]] (assoc acc k v)))
+(def escaped-response-string "{\"filename\":\"/home/filip/Dropbox/ClojureProjects/imp-rest/resources/WNV_small.trees\",\"coordinateName\":\"location\",\"burnin\":1,\"nslices\":10,\"mrsd\":2015.3}" )
 
 (deftest test-parser-rest
   (testing "put settings"
            
-;           (w/app 
-;             (-> 
-;               (mock/request
-;                 :put
-;                 "/settings/coordinateName"
-;                 (json/generate-string {:value "FOO"}))
-;               
-;               (mock/content-type "application/json")))
+           (w/app 
+             (-> (mock/request
+                   :put
+                   "/settings"
+                   (json/generate-string {:id "filename" :value "/home/filip/Dropbox/ClojureProjects/imp-rest/resources/WNV_small.trees"}))
+               (mock/content-type "application/json")))
            
-(w/app 
-  (-> (mock/request
-        :put
-        "/settings"
-        (json/generate-string {:id "coordinateName" :value "FOO"}))
-      (mock/content-type "application/json")))
-
+           (w/app 
+             (-> (mock/request
+                   :put
+                   "/settings"
+                   (json/generate-string {:id "coordinateName" :value "location"}))
+               (mock/content-type "application/json")))
+           
+           (w/app 
+             (-> (mock/request
+                   :put
+                   "/settings"
+                   (json/generate-string {:id "burnin" :value 1}))
+               (mock/content-type "application/json")))
+           
+           (w/app 
+             (-> (mock/request
+                   :put
+                   "/settings"
+                   (json/generate-string {:id "nslices" :value 10}))
+               (mock/content-type "application/json")))
+           
+           (w/app 
+             (-> (mock/request
+                   :put
+                   "/settings"
+                   (json/generate-string {:id "mrsd" :value 2015.3}))
+               (mock/content-type "application/json")))          
+           
            
            (let [response (w/app (mock/request :get "/settings"))]
              
              (println 
-               
-                 (:body response)  
-               
-               )
+               (:body response))
              
-             (is (=  ( :body response )  "{\"filename\":null,\"coordinateName\":\"FOO\",\"burnin\":null,\"nslices\":null,\"mrsd\":null}" ) )  
+             (is (= ( :body response ) escaped-response-string ))))
+  
+  (testing "get results"
+           (let [response (w/app (mock/request :get "/data"))]
              
-             )))
+                 (println 
+                 response)
+             
+             (is (= 1 1))               
+             
+             ))
+  
+  )
 

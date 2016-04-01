@@ -169,11 +169,6 @@
   ""
   [settings]
   (let [ filename (:filename settings)]
-
-(println
- "name: " filename
-  )
-
     
     (->> filename
       (new FileReader )

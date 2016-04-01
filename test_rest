@@ -13,23 +13,27 @@ curl -X PUT -H "Content-Type: application/json" \
 echo -e '\n'
 
 curl -X PUT -H "Content-Type: application/json" \
-    -d '{"id": "burnin", "value": "1"}' \
+    -d '{"id": "burnin", "value": 1}' \
     http://localhost:8080/settings
 
 echo -e '\n'
 
 curl -X PUT -H "Content-Type: application/json" \
-    -d '{"id": "nslices", "value": "10"}' \
+    -d '{"id": "nslices", "value": 10}' \
     http://localhost:8080/settings
 
 echo -e '\n'
 
 curl -X PUT -H "Content-Type: application/json" \
-    -d '{"id": "mrsd", "value": "2015.3"}' \
+    -d '{"id": "mrsd", "value": 2015.3}' \
     http://localhost:8080/settings
 
 echo -e '\n'
 
 curl -X GET http://localhost:8080/settings
+
+echo -e '\n'
+
+curl -X GET http://localhost:8080/data
 
 echo -e '\n'
