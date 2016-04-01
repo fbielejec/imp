@@ -5,6 +5,7 @@
 (ns imp-rest.web
   (:use compojure.core )
   (:use ring.middleware.json-params )
+  (:use ring.middleware.params )
   (:require [clj-json.core :as json] )
   (:require [ring.util.response :as response] )
   (:require [compojure.route :as route] )
@@ -36,7 +37,7 @@
   (GET "/settings/:id" [id]
        (json-response (s/get-setting id)))
   
-  (PUT "/settings/:id" [id value]
+  (PUT "/settings" [id value]
        (json-response (s/put-setting id value)))
   
   (GET "/data" [] (d/get-data) )   
@@ -48,7 +49,7 @@
 
 (def app
   (-> handler
-    
+;    wrap-params
     wrap-json-params)
   )
 

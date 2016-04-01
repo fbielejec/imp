@@ -16,27 +16,32 @@
 (deftest test-parser-rest
   (testing "put settings"
            
-           (w/app 
-             (-> 
-               (mock/request
-                 :put
-                 "/settings/coordinateName"
-                 (json/generate-string {:value "FOO"}))
-               
-               (mock/content-type "application/json")))
+;           (w/app 
+;             (-> 
+;               (mock/request
+;                 :put
+;                 "/settings/coordinateName"
+;                 (json/generate-string {:value "FOO"}))
+;               
+;               (mock/content-type "application/json")))
            
+(w/app 
+  (-> (mock/request
+        :put
+        "/settings"
+        (json/generate-string {:id "coordinateName" :value "FOO"}))
+      (mock/content-type "application/json")))
+
            
            (let [response (w/app (mock/request :get "/settings"))]
              
              (println 
                
-;               (type
                  (:body response)  
-;                 )
                
                )
              
-             (is (=  (get "coordinateName" (:body response) ) "FOO") )  
+             (is (=  ( :body response )  "{\"filename\":null,\"coordinateName\":\"FOO\",\"burnin\":null,\"nslices\":null,\"mrsd\":null}" ) )  
              
              )))
 
