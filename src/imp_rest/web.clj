@@ -22,35 +22,33 @@
   );END:json-response
 
 
-(defn- str-to [num]
-  (apply str (interpose ", " (range 1 (inc num)))))
+;(defn- str-to [num]
+;  (apply str (interpose ", " (range 1 (inc num)))))
 
 
 (defroutes handler
   
- ; TODO: routes
- 
-;   (GET "/count-up/:to" [to] (str-to (Integer. to)))
- 
+  ;   (GET "/count-up/:to" [to] (str-to (Integer. to)))
+  
   (GET "/settings" []
        (json-response (s/get-settings)))
-
-    (GET "/settings/:id" [id]
+  
+  (GET "/settings/:id" [id]
        (json-response (s/get-setting id)))
   
-    (PUT "/settings" [id value]
+  (PUT "/settings/:id" [id value]
        (json-response (s/put-setting id value)))
-
-    (GET "/data" [] (d/get-data) )   
-    
-    
+  
+  (GET "/data" [] (d/get-data) )   
+  
   (route/not-found "Page not found")
-
+  
   );END:defroutes
 
 
 (def app
   (-> handler
+    
     wrap-json-params)
   )
 

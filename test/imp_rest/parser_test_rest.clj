@@ -4,44 +4,39 @@
 
 (ns imp-rest.parser-test-rest
   (:require [clojure.test :refer :all])
-  (:require  [ring.mock.request :as mock] )
+  (:require [ring.mock.request :as mock] )
   (:require [clj-json.core :as json] )
   (:require [imp-rest.web :as w])
-  
   (:require [imp-rest.settings :as s])
-  ;  (:require [imp-rest.parser :as p])
   
   )
 
+(defn rf ([] {}) ([acc [k v]] (assoc acc k v)))
+
 (deftest test-parser-rest
-  
   (testing "put settings"
            
            (w/app 
-             (mock/request :put "/settings/coordinateName" "FOO" )
-             )
+             (-> 
+               (mock/request
+                 :put
+                 "/settings/coordinateName"
+                 (json/generate-string {:value "FOO"}))
+               
+               (mock/content-type "application/json")))
+           
            
            (let [response (w/app (mock/request :get "/settings"))]
              
              (println 
-               response
+               
+;               (type
+                 (:body response)  
+;                 )
+               
                )
              
-             (is (=  (get (:body response) :coordinateName) "FOO") )  
+             (is (=  (get "coordinateName" (:body response) ) "FOO") )  
              
-             );END:let
-           
-           );END: put settings test
-  
-  );END:rest test
+             )))
 
-;(deftest test-app
-;  (testing "main route"
-;    (let [response (app (mock/request :get "/"))]
-;      (is (= (:status response) 200))
-;      (is (= (:body response) "Hello World")))
-;)
-;
-;  (testing "not-found route"
-;    (let [response (app (mock/request :get "/invalid"))]
-;      (is (= (:status response) 404)))))
