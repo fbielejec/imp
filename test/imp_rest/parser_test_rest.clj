@@ -61,11 +61,11 @@
   
   (testing "get results"
            (let [response (w/app (mock/request :get "/data"))]
-
+             
              (u/p-print
                (u/from-json
                  (:body response)))
-
+             
              (is (= 1 1))               
              
              )))

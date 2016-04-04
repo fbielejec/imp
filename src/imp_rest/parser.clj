@@ -295,7 +295,7 @@
         (swap! i inc)
         {
          :name (str "tree_" @i )
-         :value elem
+         :values elem
          }
         )
       coll
