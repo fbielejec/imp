@@ -286,22 +286,20 @@
                (apply interleave coll ))))
 
 
-; TODO recur to get i
 (defn name-value
   ""
   [coll]
-  (map
-    (fn [elem]
-      
-      {
-       :name (str "tree_" )
-       :value elem
-       }
-      
-      )
-    coll
-    )
-  )
+  (let [i (atom 0)]
+    (map
+      (fn [elem]
+        (swap! i inc)
+        {
+         :name (str "tree_" @i )
+         :value elem
+         }
+        )
+      coll
+      )))
 
 
 (defn frontend-friendly-format 
