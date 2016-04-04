@@ -266,11 +266,7 @@
 (defn frontend-friendly-format 
   "format the data exacly as the D3 frontend expects it"
   [maps]
-  
-  (println
-    (count (get 0 maps) ) 
-    )
-  
+;  (let [ ntrees (->  maps (first) (val) (count))]    
   (map (fn [ m]
          ( let [k (key m) values (val m) ]
            (map
@@ -279,7 +275,9 @@
                )
              values                
              )))
-       maps))
+       maps)
+;  )
+)
 
 
 (defn map-red
@@ -295,18 +293,6 @@
     )
   )
 
-;(defn map-red
-;  ""
-;  [coll]
-;  (map
-;    (fn [[head & tail]]
-;
-;      (println head)
-;      
-;      )
-;    coll
-;    )
-;  )
 
 (defn format-data
   "format the data to conform to JSON format ready for D3 plotting"
