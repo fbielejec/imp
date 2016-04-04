@@ -9,18 +9,18 @@
   )
 
 
-(defn printHashMap [hashMap]
-  "Pretty-prints a hashmap"
-  
-  (clojure.pprint/write hashMap)
-  
-  );END: printHashMap
+(defn p-print [coll]
+  "Pretty-prints a data structure"
+  (clojure.pprint/write coll))
 
 
-(defn toJSON [hashMap]
+(defn toJSON [coll]
   "Call to clojure.data.json library to generate JSON from Clojure data structure"
-  (json/write-str hashMap)
-  );END: saveJSON
+  (json/write-str coll))
+
+
+(defn from-json [coll]
+   (json/read-str coll))
 
 
 (defn great-circle-distance

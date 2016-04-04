@@ -154,17 +154,6 @@
   );END: getDistances
 
 
-
-;(def filename "/home/filip/Dropbox/ClojureProjects/imp/resources/WNV_small.trees" )
-;
-;(def importer
-;  (->> filename
-;    (new FileReader )
-;    (new NexusImporter )
-;    );END: thread last
-;  );END: treeImporter
-
-
 (defn createTreeImporter
   ""
   [settings]
@@ -240,40 +229,10 @@
   );END:createSliceHeights
 
 
-
-
-
-
-
-
-
-; TODO: refactor to use pmap over treeMaps collection
-;(defn treesLoop
-;  "Go over the collection of tree maps calculating spatial stats
-;  @return: vector of maps with the same keys"
-;  [ settings]
-;  (let [treeMaps (extractTrees settings) sliceHeights (createSliceHeights treeMaps settings)]
-;    
-;    (reduce
-;      (fn [mapsVector branchesMap]
-;        
-;        (conj mapsVector 
-;              ( getDistances branchesMap sliceHeights )  
-;              )    
-;        
-;        );END:fn
-;      []; initial
-;      treeMaps; coll
-;      );END:reduce
-;    );END: let
-;  );END: treesLoop
-
-
 (defn treesLoop
   "Go over the collection of tree maps calculating spatial stats
   @return: vector of maps with the same keys"
   [ settings]
-  
   (let [treeMaps (extractTrees settings) sliceHeights (createSliceHeights treeMaps settings)]
     
     (into []
@@ -282,10 +241,7 @@
                                  ))
                treeMaps))
     );END: let
-  
   );END: treesLoop
-
-
 
 
 (defn dateize-keys
@@ -306,20 +262,66 @@
     );END:let
   );END:dateize-keys
 
+
+(defn frontend-friendly-format 
+  "format the data exacly as the D3 frontend expects it"
+  [maps]
+  
+  (println
+    (count (get 0 maps) ) 
+    )
+  
+  (map (fn [ m]
+         ( let [k (key m) values (val m) ]
+           (map
+             (fn [v]
+               (hash-map :time k :distance v)
+               )
+             values                
+             )))
+       maps))
+
+
+(defn map-red
+  ""
+  [x]
+  
+  (let [ ntrees (count (nth x 0 ) ) ]
+    
+    (partition ntrees 
+               (apply interleave x ) 
+               )
+    
+    )
+  )
+
+;(defn map-red
+;  ""
+;  [coll]
+;  (map
+;    (fn [[head & tail]]
+;
+;      (println head)
+;      
+;      )
+;    coll
+;    )
+;  )
+
 (defn format-data
   "format the data to conform to JSON format ready for D3 plotting"
   [mapsVector]
   
+;  (count
     (->> mapsVector
-      ( apply u/merge-maps)
+      (apply u/merge-maps)
       (dateize-keys )
-      (into (sorted-map) )
-;      (u/toJSON)
-;      (str )
+      (into (sorted-map))
+      (frontend-friendly-format)
+      (map-red)
       );END: feelin thready
-  
+;  )
   );END: format-data
-
 
 
 (defn parse-data

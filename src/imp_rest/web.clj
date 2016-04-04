@@ -12,6 +12,7 @@
   (:require [imp-rest.settings :as s] )
   (:require [imp-rest.data :as d] )
   (:require [imp-rest.parser :as p])
+  (:require [imp-rest.utils :as u])
   )
 
 
@@ -36,7 +37,8 @@
        (json-response (s/put-setting id value)))
   
   (GET "/data" [] 
-       (json-response  (p/parse-data )))   
+       (json-response  
+           (p/parse-data)))   
   
   (route/not-found "Page not found")
   

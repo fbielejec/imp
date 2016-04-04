@@ -8,7 +8,7 @@
   (:require [clj-json.core :as json] )
   (:require [imp-rest.web :as w])
   (:require [imp-rest.settings :as s])
-  
+  (:require [imp-rest.utils :as u]) 
   )
 
 (def escaped-response-string "{\"filename\":\"/home/filip/Dropbox/ClojureProjects/imp-rest/resources/WNV_small.trees\",\"coordinateName\":\"location\",\"burnin\":1,\"nslices\":10,\"mrsd\":2015.3}" )
@@ -61,13 +61,12 @@
   
   (testing "get results"
            (let [response (w/app (mock/request :get "/data"))]
-             
-             (println 
-               response)
-             
+
+             (u/p-print
+               (u/from-json
+                 (:body response)))
+
              (is (= 1 1))               
              
-             ))
-  
-  )
+             )))
 
