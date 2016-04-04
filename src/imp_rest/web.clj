@@ -22,7 +22,7 @@
    :headers {"Content-Type" "application/json"}
    :body (json/generate-string data)
    }
-  );END:json-response
+  )
 
 
 (defroutes handler
@@ -42,12 +42,11 @@
   
   (route/not-found "Page not found")
   
-  );END:defroutes
+  )
 
 
 (def app
   (-> handler
     ;    wrap-params
-    wrap-json-params)
-  )
+    wrap-json-params))
 

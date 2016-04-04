@@ -54,8 +54,8 @@
            
            (let [response (w/app (mock/request :get "/settings"))]
              
-             (println 
-               (:body response))
+;             (println 
+;               (:body response))
              
              (is (= ( :body response ) escaped-response-string ))))
   

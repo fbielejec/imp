@@ -10,9 +10,4 @@
 (defn -main
   "Entry point"
   [& args]
-  (do
-    
-    (run-jetty #'web/app {:port 8080})
-    
-    );END;do
-  );END: main
+  (run-jetty #'web/app {:port 8080}))

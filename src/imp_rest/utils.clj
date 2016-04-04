@@ -20,30 +20,17 @@
 
 
 (defn from-json [coll]
-   (json/read-str coll))
+  (json/read-str coll))
 
 
 (defn great-circle-distance
   "Call with 5-th arg 3958.761 for miles and 3440.069 for nautical miles"
-  ([lat1 long1 lat2 long2] 
-    
-    (great-circle-distance lat1 long1 lat2 long2 6371.009)
-    
-    );END:arity
-  
+  ([lat1 long1 lat2 long2] (great-circle-distance lat1 long1 lat2 long2 6371.009))
   ([lat1 long1 lat2 long2 radius]
-    
-    (let [ [lat1-r long1-r lat2-r long2-r] (map #(Math/toRadians %) [lat1 long1 lat2 long2]) ]
+    (let [ [lat1-r long1-r lat2-r long2-r] (map #(Math/toRadians %) [lat1 long1 lat2 long2])]
       (* radius
          (Math/acos (+ (* (Math/sin lat1-r) (Math/sin lat2-r))
-                       (* (Math/cos lat1-r) (Math/cos lat2-r) (Math/cos (- long1-r long2-r)) )
-                       
-                       );END:+
-                    );END:acos
-         );END:*
-      );END:let
-    );END:arity 
-  );END:great-circle-distance
+                       (* (Math/cos lat1-r) (Math/cos lat2-r) (Math/cos (- long1-r long2-r)))))))))
 
 
 (defn merge-maps [& maps]
@@ -53,15 +40,12 @@
                       (update-in m [k] (fnil conj []) v))
                     m1, m2))
           {}
-          maps)
-  );END: merge-maps
+          maps))
 
 
-(defn writeFile [data filename]
+(defn write-file [data filename]
   (with-open [w (clojure.java.io/writer  filename )]
-    (.write w (str data) )
-    );END: with-open
-  );END: writeFile
+    (.write w (str data))))
 
 
 (defn update-values 
@@ -69,17 +53,10 @@
   [m f & args]
   (reduce 
     (fn [r [k v]] 
-      (assoc r k (apply f v args))
-      );END: fn 
+      (assoc r k (apply f v args)))
     {} 
     m
-    );END: reduce
-  );END:update-values
-
-
-
-
-
+    ))
 
 
 
