@@ -239,7 +239,7 @@
           (pmap (fn[treeMap] 
                   ( getDistances treeMap sliceHeights 
                                  ))
-               treeMaps))
+                treeMaps))
     );END: let
   );END: treesLoop
 
@@ -263,50 +263,68 @@
   );END:dateize-keys
 
 
-(defn frontend-friendly-format 
-  "format the data exacly as the D3 frontend expects it"
+(defn pair-with-key
+  "Carry the key over to every value of map"
   [maps]
-;  (let [ ntrees (->  maps (first) (val) (count))]    
+  ;  (let [ ntrees (->  maps (first) (val) (count))]    
   (map (fn [ m]
          ( let [k (key m) values (val m) ]
            (map
              (fn [v]
-               (hash-map :time k :distance v)
-               )
-             values                
-             )))
+               (hash-map :time k :distance v))
+             values)))
        maps)
-;  )
-)
+  ;  ) 
+  )
 
 
-(defn map-red
-  ""
-  [x]
-  
-  (let [ ntrees (count (nth x 0 ) ) ]
-    
+(defn interleave-n
+  "Interleave n trees (first with first, second with second, etc)"
+  [coll]
+  (let [ ntrees (count (nth coll 0 ))]
     (partition ntrees 
-               (apply interleave x ) 
-               )
-    
+               (apply interleave coll ))))
+
+
+; TODO recur to get i
+(defn name-value
+  ""
+  [coll]
+  (map
+    (fn [elem]
+      
+      {
+       :name (str "tree_" )
+       :value elem
+       }
+      
+      )
+    coll
     )
   )
+
+
+(defn frontend-friendly-format 
+  "format the data exacly as the D3 frontend expects it"
+  [maps]
+  (-> maps
+    (pair-with-key)
+    (interleave-n)
+    (name-value)
+    ))
 
 
 (defn format-data
   "format the data to conform to JSON format ready for D3 plotting"
   [mapsVector]
   
-;  (count
-    (->> mapsVector
-      (apply u/merge-maps)
-      (dateize-keys )
-      (into (sorted-map))
-      (frontend-friendly-format)
-      (map-red)
-      );END: feelin thready
-;  )
+  (->> mapsVector
+    (apply u/merge-maps)
+    (dateize-keys )
+    (into (sorted-map))
+    (frontend-friendly-format)
+    );END: feelin thready
+  
   );END: format-data
 
 
@@ -314,11 +332,11 @@
   "Parse, analyze and return formatted JSON, ready for plotting in frontend"
   [ ]
   (let [settings (s/get-settings)]
-
+    
     ( format-data 
       (treesLoop settings) 
       )
-   
+    
     
     );END:let
   );END:parse
