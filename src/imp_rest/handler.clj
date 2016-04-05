@@ -13,6 +13,8 @@
   (:require [imp-rest.data :as d] )
   (:require [imp-rest.parser :as p])
   (:require [imp-rest.utils :as u])
+  ;  (:require [imp-rest.home :refer [home-routes]])
+  
   )
 
 
@@ -33,6 +35,10 @@
 
 
 (defroutes app-routes
+  
+  (GET  "/" [] (response/resource-response "index.html" {:root "public"}))
+  
+  (route/resources "/")
   
   (GET "/settings" []
        (json-response (s/get-settings)))

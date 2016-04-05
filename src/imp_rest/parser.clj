@@ -18,8 +18,8 @@
 
 (defn get-root-coords [tree settings]
   "Returns root coordinate attribute values"
-  (let [root-node (. tree getRootNode ) ]
-    (. root-node getAttribute (:coordinateName settings))))
+  (let [root-node (.getRootNode tree)]
+    (.getAttribute root-node (:coordinateName settings))))
 
 
 (defn get-distance-to-root
@@ -35,11 +35,11 @@
    key is a node which represents the branch, value is a map of attributes we need later"
   [tree settings]
   (into {}
-        (let [nodes (into #{} (. tree getNodes )) root-coord (get-root-coords tree settings) ]
+        (let [nodes (set  (.getNodes tree)) root-coord (get-root-coords tree settings) ]
           (map  (fn [node]
-                  (if (not (. tree isRoot node))
-                    (let [parent-node (. tree getParent node)]
-                      (let [node-coord ( . node getAttribute (:coordinateName settings) ) parent-coord ( . parent-node getAttribute (:coordinateName settings) ) ]
+                  (if (not (.isRoot tree node))
+                    (let [parent-node (.getParent tree node)]
+                      (let [node-coord (.getAttribute node (:coordinateName settings)) parent-coord (.getAttribute parent-node (:coordinateName settings))]
                         ;; :node001 {:startX 0.1 :startY 0.3 :endX 0.5 :endY 0.4 :length 0.71 }                        
                         (hash-map node {
                                         :startX ( get parent-coord 0 ) ; parent long
@@ -92,7 +92,7 @@
     (fn [slices-map slice-height ]
       ;; get the branches intersected by this slice
       (let [ branches-subset (filter-by-slice branches-map slice-height)]
-        (if ( > (count branches-subset) 0)
+        (if (pos? (count branches-subset))
           ;  get the furthest one from root
           (let [ furthest-branch (get-furthest-from-root branches-subset)]
             (let [dist (map :distanceToRoot (vals furthest-branch)) length (map :parentHeight ( vals furthest-branch))]
@@ -120,7 +120,7 @@
         (conj tree-maps
               (analyze-tree current-tree settings)))
       [] ;initial
-      (drop (:burnin settings) (lazy-seq (. tree-importer importTrees))))))
+      (drop (:burnin settings) (lazy-seq (.importTrees tree-importer) )))))
 
 
 (defn get-max-parent-height
@@ -157,10 +157,10 @@
   @return: vector of maps with the same keys"
   [settings]
   (let [tree-maps (extract-trees settings) slice-heights (create-slice-heights tree-maps settings)]
-    (into []
-          (pmap (fn [tree-map] 
-                  (get-distances tree-map slice-heights))
-                tree-maps))))
+    (vec
+    (pmap
+      (fn [tree-map] (get-distances tree-map slice-heights))
+      tree-maps))))
 
 
 (defn dateize-keys

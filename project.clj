@@ -26,6 +26,7 @@
   
   :plugins [
             [no-man-is-an-island/lein-eclipse "2.0.0"]
+            [lein-kibit "0.1.2"]
             ]
   
   :main imp-rest.core 
