@@ -2,7 +2,7 @@
 ;;---@fbielejec
 ;;
 
-(ns imp-rest.web
+(ns imp-rest.handler
   (:use compojure.core )
   (:use ring.middleware.json-params )
   (:use ring.middleware.params )
@@ -16,6 +16,13 @@
   )
 
 
+;(defn init []
+;  (println "imp is starting"))
+;
+;
+;(defn destroy []
+;  (println "imp is shutting down"))
+
 (defn json-response [data & [status]]
   {
    :status (or status 200)
@@ -25,7 +32,7 @@
   )
 
 
-(defroutes handler
+(defroutes app-routes
   
   (GET "/settings" []
        (json-response (s/get-settings)))
@@ -38,7 +45,7 @@
   
   (GET "/data" [] 
        (json-response  
-           (p/parse-data)))   
+         (p/parse-data)))   
   
   (route/not-found "Page not found")
   
@@ -46,7 +53,7 @@
 
 
 (def app
-  (-> handler
+  (-> app-routes
     ;    wrap-params
     wrap-json-params))
 

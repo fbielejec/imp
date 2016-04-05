@@ -4,10 +4,10 @@
 
 (ns imp-rest.core
   (:use ring.adapter.jetty)
-  (:require [imp-rest.web :as web])
+  (:require [imp-rest.handler :as handler])
   )
 
 (defn -main
   "Entry point"
   [& args]
-  (run-jetty #'web/app {:port 8080}))
+  (run-jetty #'handler/app {:port 8080}))
