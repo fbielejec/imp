@@ -10,18 +10,12 @@
 
 (deftest test-parser
   (testing "attributes parser"
-           
            (s/put-setting :filename "/home/filip/Dropbox/ClojureProjects/imp-rest/resources/WNV_small.trees")
-           
            (let [unique-attributes (p/parse-attributes )]
              
-             (println
-               unique-attributes
-               )
+             ;             (println
+             ;               unique-attributes
+             ;               )
              
-             (is (pos? (count unique-attributes) ) )       
-             
-             )
-           
-           ))
+             (is (pos? (count unique-attributes))))))
 
