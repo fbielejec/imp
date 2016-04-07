@@ -104,23 +104,25 @@
 
 (defn create-tree-importer
   "Create JEBL tree importer"
-  [settings]
-  (let [filename (:filename settings)]
+  [filename]
+;  (let [filename (:filename settings)]
     (->> filename
       (new FileReader )
-      (new NexusImporter))))
+      (new NexusImporter))
+;    )
+  )
 
 
 (defn extract-trees
   "Make a collection of tree maps"
   [settings]
-  (let [tree-importer (create-tree-importer settings)]
+  (let [tree-importer (create-tree-importer (:filename settings))]
     (reduce
       (fn [tree-maps current-tree]
         (conj tree-maps
               (analyze-tree current-tree settings)))
       [] ;initial
-      (drop (:burnin settings) (lazy-seq (.importTrees tree-importer) )))))
+      (drop (:burnin settings) (lazy-seq (.importTrees tree-importer))))))
 
 
 (defn get-max-parent-height

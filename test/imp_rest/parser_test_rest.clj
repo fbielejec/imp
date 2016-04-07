@@ -62,11 +62,12 @@
   (testing "get results"
            (let [response (h/app (mock/request :get "/data"))]
              
-             (u/p-print
-               (u/from-json
-                 (:body response)))
+;             (u/p-print
+;               (u/from-json
+;                 (:body response))
+;               )
              
-             (is (= 1 1))               
+           (is (= (:status response) 200))              
              
              )))
 
