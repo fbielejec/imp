@@ -6,6 +6,8 @@
   (:use compojure.core )
   (:use ring.middleware.json-params )
   (:use ring.middleware.params )
+;  (:import org.codehaus.jackson.JsonParseException)
+;(:import clojure.contrib.condition.Condition)
   (:require [clj-json.core :as json] )
   (:require [ring.util.response :as response] )
   (:require [compojure.route :as route] )
@@ -23,6 +25,12 @@
 ;(defn destroy []
 ;  (println "imp is shutting down"))
 
+
+(def error-codes
+  {:invalid 400
+   :not-found 404})
+
+
 (defn json-response [data & [status]]
   {
    :status (or status 200)
@@ -31,7 +39,7 @@
    }
   )
 
-
+; TODO: error handling (in handler :) )
 (defroutes app-routes
   
   (GET  "/" [] (response/resource-response "index.html" {:root "public"}))
@@ -56,8 +64,21 @@
   )
 
 
+;(defn wrap-exception-handling [handler]
+;  (fn [req]
+;    (try
+;      (or (handler req)
+;          (json-response {"error" "resource not found"} 404))
+;      (catch JsonParseException e
+;        (json-response {"error" "malformed json"} 400))
+;      (catch Condition e
+;        (let [{:keys [type message]} (meta e)]
+;          (json-response {"error" message} (error-codes type)))))))
+
+
 (def app
   (-> app-routes
     ;    wrap-params
+;    wrap-exception-handler
     wrap-json-params))
 
