@@ -21,8 +21,11 @@
 (defn get-setting [id]
   (@settings (keyword id)))
 
-;; TODO if id is among map keys
-(defn put-setting [id value]
-  (swap! settings assoc (keyword id) value)
-  value)
+(defn put-setting 
+  "if key exists in atomic map update its value"
+  [id value]
+  (if (contains? @settings id)
+    (swap! settings assoc (keyword id) value)
+    value
+    ))
 

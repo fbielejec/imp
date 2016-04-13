@@ -16,7 +16,6 @@
 
 (deftest test-settings
   (testing "Testing settings"
-           
            (let [s1 "location" s2 1 s3 10 s4 2005.3 ]
              
              (s/put-setting :coordinateName s1)
@@ -30,15 +29,12 @@
              (is (= s4 (s/get-setting :mrsd)))))
   
   
-   (testing "Testing non-existing setting"
-  
-  
-  
-  )
-  
-  
-  
-  )
+  (testing "Testing non-existing setting"
+           (let [s1 "bar"]
+             
+             (s/put-setting :foo s1)
+             ; this should not accept new key
+             (is (= nil (s/get-setting :foo))))))
 
 ;(deftest test-parser-rest
 ;  (testing "put settings"
