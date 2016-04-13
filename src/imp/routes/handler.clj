@@ -49,11 +49,19 @@
 
 
 (defroutes trees-routes
-  (GET "/trees" []
-       (json-response (t/list-trees)))
+
+  (PUT "/upload" [input]
+       
+        (json-response 
+(t/handle-upload input)
+       )
+       )
+
+
+;  (GET "/trees" []
+;       (json-response (t/list-trees)))
   
-  (PUT "/trees" [input]
-       (json-response (t/add-trees input))))
+  )
 
 
 (def app
