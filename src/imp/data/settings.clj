@@ -8,7 +8,6 @@
 (def settings 
   (atom 
     {
-;     :trees nil
      :coordinateName nil
      :burnin nil
      :nslices nil

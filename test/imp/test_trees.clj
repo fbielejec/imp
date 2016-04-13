@@ -9,9 +9,18 @@
 
 
 (deftest test-trees
-  (testing "test trees DB store"
-
+  
+    (testing "test trees store"
            
-           
+             (t/add-trees "FOO")
 
-))
+             (println
+               (t/list-trees)
+               )
+             
+   )
+  
+;  (testing "test trees DB store"
+;)
+  
+  )
