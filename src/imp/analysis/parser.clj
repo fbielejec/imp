@@ -2,12 +2,12 @@
 ;;---@fbielejec
 ;;
 
-(ns imp-rest.parser
+(ns imp.analysis.parser
   (:import java.io.FileReader)
   (:import jebl.evolution.io.NexusImporter)
-  (:require [imp-rest.settings :as s])
-  (:require [imp-rest.utils :as u])
-  (:require [imp-rest.time :as t])
+  (:require [imp.settings :as s])
+  (:require [imp.utils.utils :as u])
+  (:require [imp.utils.time :as t])
   )
 
 
@@ -116,7 +116,7 @@
 (defn extract-trees
   "Make a collection of tree maps"
   [settings]
-  (let [tree-importer (create-tree-importer (:filename settings))]
+  (let [tree-importer (create-tree-importer (:trees settings))]
     (reduce
       (fn [tree-maps current-tree]
         (conj tree-maps
@@ -172,24 +172,21 @@
     (letfn [(get-date [k] (t/get-slice-date k end-date))]
       (reduce
         (fn[km k]
-          (assoc km (get-date k) (get m k)));fn
-        {};initial
+          (assoc km (get-date k) (get m k))) ;fn
+        {} ;initial
         (keys m)))))
 
 
 (defn pair-with-key
   "Carry the key over to every value of map"
   [maps]
-  ;  (let [ ntrees (->  maps (first) (val) (count))]    
   (map (fn [ m]
          ( let [k (key m) values (val m) ]
            (map
              (fn [v]
                (hash-map :time k :distance v))
              values)))
-       maps)
-  ;  ) 
-  )
+       maps))
 
 
 (defn interleave-n
@@ -212,8 +209,7 @@
          :values elem
          }
         )
-      coll
-      )))
+      coll)))
 
 ;; TODO: 3 traversals, limit to 2
 (defn frontend-friendly-format 

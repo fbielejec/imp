@@ -2,9 +2,9 @@
 ;;---@fbielejec
 ;;
 
-(ns imp-rest.core
+(ns imp.core
   (:use ring.adapter.jetty)
-  (:require [imp-rest.handler :as handler])
+  (:require [imp.routes.handler :as handler])
   )
 
 (defn -main

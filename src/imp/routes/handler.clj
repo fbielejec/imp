@@ -2,7 +2,7 @@
 ;;---@fbielejec
 ;;
 
-(ns imp-rest.handler
+(ns imp.routes.handler
   (:use compojure.core )
   (:use ring.middleware.json-params )
   (:use ring.middleware.params )
@@ -11,10 +11,10 @@
   (:require [clj-json.core :as json] )
   (:require [ring.util.response :as response] )
   (:require [compojure.route :as route] )
-  (:require [imp-rest.settings :as s] )
-  (:require [imp-rest.data :as d] )
-  (:require [imp-rest.parser :as p])
-  (:require [imp-rest.utils :as u])
+  (:require [imp.settings :as s] )
+  (:require [imp.attributes :as a] )
+  (:require [imp.parser :as p])
+  (:require [imp.utils.utils :as u])
   )
 
 
@@ -54,6 +54,10 @@
   
   (PUT "/settings" [id value]
        (json-response (s/put-setting id value)))
+  
+  
+;    (GET "/attributes" []
+;       (json-response (a/parse-attributes)))
   
   (GET "/data" [] 
        (json-response  

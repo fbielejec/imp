@@ -2,10 +2,10 @@
 ;;---@fbielejec
 ;;
 
-(ns imp-rest.utils
+(ns imp.utils.utils
   (:require [clojure.pprint :refer (pprint)]  )
   (:require [clojure.data.json :as json] )
-  (:require [imp-rest.time :as t])
+  (:require [imp.utils.time :as t])
   )
 
 
