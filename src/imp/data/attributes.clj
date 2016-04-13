@@ -4,8 +4,8 @@
 
 (ns imp-rest.attributes
   (:use clojure.set)
-  (:require [imp-rest.settings :as s])
-  (:require [imp-rest.parser :as p])
+  (:require [imp.settings :as s])
+  (:require [imp.analysis.parser :as p])
   )
 
 (defn parse-attributes

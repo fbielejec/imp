@@ -5,7 +5,7 @@
 (ns imp.analysis.parser
   (:import java.io.FileReader)
   (:import jebl.evolution.io.NexusImporter)
-  (:require [imp.settings :as s])
+  (:require [imp.data.settings :as s])
   (:require [imp.utils.utils :as u])
   (:require [imp.utils.time :as t])
   )

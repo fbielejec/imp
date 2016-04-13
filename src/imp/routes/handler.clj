@@ -11,9 +11,9 @@
   (:require [clj-json.core :as json] )
   (:require [ring.util.response :as response] )
   (:require [compojure.route :as route] )
-  (:require [imp.settings :as s] )
-  (:require [imp.attributes :as a] )
-  (:require [imp.parser :as p])
+  (:require [imp.data.settings :as s] )
+;  (:require [imp.data.attributes :as a] )
+  (:require [imp.analysis.parser :as p])
   (:require [imp.utils.utils :as u])
   )
 
