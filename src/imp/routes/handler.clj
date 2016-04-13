@@ -13,7 +13,7 @@
   (:require [compojure.route :as route] )
   (:require [imp.data.settings :as s] )
 ;  (:require [imp.data.attributes :as a] )
-  (:require [imp.analysis.parser :as p])
+;  (:require [imp.analysis.parser :as p])
   (:require [imp.utils.utils :as u])
   )
 
@@ -55,13 +55,13 @@
   (PUT "/settings" [id value]
        (json-response (s/put-setting id value)))
   
-  
 ;    (GET "/attributes" []
 ;       (json-response (a/parse-attributes)))
   
-  (GET "/data" [] 
-       (json-response  
-         (p/parse-data)))   
+;  (GET "/data" [] 
+;       (json-response  
+;         (p/parse-data))
+       
   
   (route/not-found "Page not found")
   

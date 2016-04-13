@@ -10,11 +10,9 @@
   (:require [imp.utils.time :as t])
   )
 
-
 ;;;;;;;;;;;;;;;;;;;;;;;
 ;;---PARSE TO JSON---;;
 ;;;;;;;;;;;;;;;;;;;;;;;
-
 
 (defn get-root-coords [tree settings]
   "Returns root coordinate attribute values"
@@ -221,7 +219,6 @@
     (name-value)
     ))
 
-
 (defn format-data
   "format the data to conform to JSON format ready for D3 plotting"
   [maps-vector]
@@ -231,14 +228,11 @@
     (into (sorted-map))
     (frontend-friendly-format)))
 
-
 (defn parse-data
   "Parse, analyze and return formatted JSON, ready for plotting in frontend"
   []
   (let [settings (s/get-settings)]
     (format-data 
       (trees-loop settings))))
-
-
 
 

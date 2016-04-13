@@ -17,6 +17,8 @@
    [org.clojure/data.json "0.2.6"]
    [simple-time "0.2.0"]
    [local/jebl "0.4"]
+   [org.clojure/java.jdbc "0.2.3"]
+   [org.xerial/sqlite-jdbc "3.7.2"]
    ]
   
   :dev-dependencies
@@ -29,7 +31,7 @@
             [lein-kibit "0.1.2"]
             ]
   
-  :main imp-rest.core 
+  :main imp.core 
   )
 
 
