@@ -10,8 +10,8 @@
   (:require [ring.util.response :as response] )
   (:require [compojure.route :as route] )
   (:require [imp.data.settings :as s] )
-    (:require [imp.data.trees :as t] )
-;  (:require [imp.utils.utils :as u])
+  (:require [imp.data.trees :as t] )
+  ;  (:require [imp.utils.utils :as u])
   )
 
 
@@ -49,17 +49,15 @@
 
 
 (defroutes trees-routes
-
+  
+  ;; route to upload .trees file to
   (PUT "/upload" [input]
-       
-        (json-response 
-(t/handle-upload input)
-       )
-       )
-
-
-;  (GET "/trees" []
-;       (json-response (t/list-trees)))
+       (json-response 
+         (t/handle-upload input)))
+  
+  ;  (GET "/trees" []
+  ;       (json-response (t/list-trees)))
+  
   
   )
 
@@ -67,6 +65,6 @@
 (def app
   (-> (routes settings-routes trees-routes app-routes)
     ;    wrap-params
-;    wrap-exception-handler
+    ;    wrap-exception-handler
     wrap-json-params))
 

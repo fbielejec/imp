@@ -13,32 +13,18 @@
 
 (deftest test-trees
   
-;  (testing "test trees store"
-;           (let [t1 "FOO"]
-;             (t/add-trees t1)
-;             (is (= t1 ( nth (t/list-trees) 0)))))
-  
-  (testing "test trees DB store"
+  (testing "test trees file uploading"
            
-           (let [t1 "FOO"]
+           (let [file  (slurp "/home/filip/Dropbox/ClojureProjects/imp-rest/resources/WNV_small.trees") ]
              
              (h/app 
                (-> (mock/request
                      :put
                      "/upload"
-                     (json/generate-string { :input t1})
-                     )
-                 (mock/content-type "application/json")
-                 ))
+                     (json/generate-string { :input file}))
+                 (mock/content-type "application/json")))
              
              
-             
-             
-             (println
-               (type
-             (t/list-trees)
-             )
-             )
              
              
              
