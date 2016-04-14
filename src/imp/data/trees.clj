@@ -1,18 +1,12 @@
 (ns imp.data.trees
-  ;  (:import org.apache.commons.io.FileUtils )
-  ;  (:import java.net.URL)
-  ;  (:import java.io.File)
   (:import java.io.FileReader)
   (:import jebl.evolution.io.NexusImporter)
   )
 
-;https://github.com/alandipert/enduro
-;http://www.brandonbloom.name/blog/2013/06/26/slurp-and-spit/
 
 (def trees-db (atom
-                ; (clojure.java.io/file "trees.tmp")  
-                (java.io.File/createTempFile "trees" ".tmp")
-                ))
+                ; (clojure.java.io/file "trees_db.tmp")  
+                (java.io.File/createTempFile "trees_db" ".tmp")))
 
 
 (defn overwrite-trees-db
@@ -24,9 +18,15 @@
 
 
 (defn delete-trees-db
-  "Explicitely delete db file"
+  "Explicitely delete db-trees file"
   []
   (.delete @trees-db))
+
+
+(defn get-trees-db
+  "Return the current content of db-trees file"
+  []
+  @trees-db)
 
 
 (defn handle-upload

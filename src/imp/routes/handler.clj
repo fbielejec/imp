@@ -50,8 +50,8 @@
 
 (defroutes trees-routes
   
-  ;; route to upload .trees file to
-  (PUT "/upload" [input]
+  ;; route to upload .trees files
+  (PUT "/trees" [input]
        (json-response 
          (t/handle-upload input)))
   
