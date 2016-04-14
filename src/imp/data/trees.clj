@@ -35,9 +35,3 @@
   [input]
   (overwrite-trees-db input))
 
-;     (let [tree-importer
-;         (->> @trees-db
-;           (new FileReader )
-;           (new NexusImporter))
-;     tree (.importNextTree tree-importer)    ]
-;     )

@@ -11,7 +11,7 @@
   (:require [compojure.route :as route] )
   (:require [imp.data.settings :as s] )
   (:require [imp.data.trees :as t] )
-  ;  (:require [imp.utils.utils :as u])
+  (:require [imp.data.attributes :as a])
   )
 
 
@@ -37,6 +37,21 @@
   (route/not-found "Page not found"))
 
 
+(defroutes trees-routes
+  ;; route to upload .trees files
+  (PUT "/trees" [input]
+       (json-response 
+         (t/handle-upload input))))
+
+
+(defroutes attributes-routes
+  ;; route on which server serves parsed location attribute values
+  (GET "/attributes" []
+       (json-response 
+         (a/parse-attributes)
+         )))
+
+
 (defroutes settings-routes
   (GET "/settings" []
        (json-response (s/get-settings)))
@@ -48,22 +63,8 @@
        (json-response (s/put-setting id value))))
 
 
-(defroutes trees-routes
-  
-  ;; route to upload .trees files
-  (PUT "/trees" [input]
-       (json-response 
-         (t/handle-upload input)))
-  
-  ;  (GET "/trees" []
-  ;       (json-response (t/list-trees)))
-  
-  
-  )
-
-
 (def app
-  (-> (routes settings-routes trees-routes app-routes)
+  (-> (routes trees-routes attributes-routes settings-routes app-routes)
     ;    wrap-params
     ;    wrap-exception-handler
     wrap-json-params))

@@ -2,16 +2,16 @@
 ;;---@fbielejec
 ;;
 
-(ns imp-rest.attributes
+(ns imp.data.attributes
   (:use clojure.set)
-  (:require [imp.settings :as s])
+  (:require [imp.data.trees :as t])
   (:require [imp.analysis.parser :as p])
   )
 
 (defn parse-attributes
   "Return a unique set of attribute names"
   []
-  (let [treefilename (s/get-setting :trees) tree-importer (p/create-tree-importer treefilename) tree (.importNextTree tree-importer)]
+  (let [trees-file (t/get-trees-db) tree-importer (p/create-tree-importer trees-file) tree (.importNextTree tree-importer)]
     (reduce
       (fn [unique-attributes node]
         (if (not (.isRoot tree node))

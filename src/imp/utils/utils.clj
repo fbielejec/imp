@@ -58,7 +58,8 @@
     m
     ))
 
-
-
-
+;(defn collections-equal?
+;  "Compare two collections assert if equal no matter the order or repetitions"
+;  [coll1 coll2]
+;  (= coll1 coll1))
 

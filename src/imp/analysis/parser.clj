@@ -10,9 +10,18 @@
   (:require [imp.utils.time :as t])
   )
 
-;;;;;;;;;;;;;;;;;;;;;;;
+
+;;---CREATE TREE IMPORTER---;;
+
+(defn create-tree-importer
+  "Create JEBL tree importer"
+  [file]
+  (->> file
+    (new FileReader )
+    (new NexusImporter))
+  )
+
 ;;---PARSE TO JSON---;;
-;;;;;;;;;;;;;;;;;;;;;;;
 
 (defn get-root-coords [tree settings]
   "Returns root coordinate attribute values"
@@ -100,17 +109,6 @@
     slice-heights))
 
 
-(defn create-tree-importer
-  "Create JEBL tree importer"
-  [filename]
-;  (let [filename (:filename settings)]
-    (->> filename
-      (new FileReader )
-      (new NexusImporter))
-;    )
-  )
-
-
 (defn extract-trees
   "Make a collection of tree maps"
   [settings]
@@ -158,9 +156,9 @@
   [settings]
   (let [tree-maps (extract-trees settings) slice-heights (create-slice-heights tree-maps settings)]
     (vec
-    (pmap
-      (fn [tree-map] (get-distances tree-map slice-heights))
-      tree-maps))))
+      (pmap
+        (fn [tree-map] (get-distances tree-map slice-heights))
+        tree-maps))))
 
 
 (defn dateize-keys
