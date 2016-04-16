@@ -5,7 +5,7 @@
 (ns imp.analysis.parser
   (:import java.io.FileReader)
   (:import jebl.evolution.io.NexusImporter)
-    (:require [imp.data.trees :as trees])
+  (:require [imp.data.trees :as trees])
   (:require [imp.data.settings :as s])
   (:require [imp.utils.utils :as u])
   (:require [imp.utils.time :as t])
@@ -105,11 +105,11 @@
           (let [ furthest-branch (get-furthest-from-root branches-subset)]
             (let [dist (map :distanceToRoot (vals furthest-branch)) length (map :parentHeight ( vals furthest-branch))]
               (assoc slices-map slice-height (nth dist 0))))
-          (assoc slices-map slice-height 0.0)))) ;; END:fn
+          (assoc slices-map slice-height 0.0))))
     {} ;; initial
     slice-heights))
 
-;; TODO
+
 (defn extract-trees
   "Make a collection of tree maps"
   [settings trees]

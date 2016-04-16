@@ -15,8 +15,8 @@
   (let [expected-result (set ["rate" "location"])]
     
     (testing "test location attributes parsing"
+                   ;; mock a PUT trees request
              (let [file  (slurp "/home/filip/Dropbox/ClojureProjects/imp-rest/resources/WNV_small.trees") ]
-               ;; mock a PUT trees request
                (h/app 
                  (-> (mock/request
                        :put

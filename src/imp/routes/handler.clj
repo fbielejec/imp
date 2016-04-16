@@ -12,6 +12,7 @@
   (:require [imp.data.settings :as s] )
   (:require [imp.data.trees :as t] )
   (:require [imp.data.attributes :as a])
+    (:require [imp.data.burnin :as b])
     (:require [imp.analysis.parser :as p])
   )
 
@@ -52,6 +53,12 @@
          (a/parse-attributes)
          )))
 
+(defroutes burnin-routes
+  ;; route on which server serves parsed location attribute values
+  (GET "/burnin" []
+       (json-response 
+         (b/parse-max-burnin)
+         )))
 
 (defroutes settings-routes
   (GET "/settings" []
@@ -70,7 +77,7 @@
 
 
 (def app
-  (-> (routes trees-routes attributes-routes settings-routes results-routes app-routes)
+  (-> (routes trees-routes attributes-routes burnin-routes settings-routes results-routes app-routes)
     ;    wrap-params
     ;    wrap-exception-handler
     wrap-json-params))
