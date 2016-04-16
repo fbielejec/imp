@@ -7,7 +7,7 @@
 echo -e '\n'
 
 curl -X PUT -H "Content-Type: application/json" \
-    -d '{"id" : "coordinateName", "value" : "location"}' \
+    -d '{"id" : "attribute", "value" : "location"}' \
     http://localhost:8080/settings
 
 echo -e '\n'

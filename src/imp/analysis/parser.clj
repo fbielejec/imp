@@ -5,6 +5,7 @@
 (ns imp.analysis.parser
   (:import java.io.FileReader)
   (:import jebl.evolution.io.NexusImporter)
+    (:require [imp.data.trees :as trees])
   (:require [imp.data.settings :as s])
   (:require [imp.utils.utils :as u])
   (:require [imp.utils.time :as t])
@@ -26,7 +27,7 @@
 (defn get-root-coords [tree settings]
   "Returns root coordinate attribute values"
   (let [root-node (.getRootNode tree)]
-    (.getAttribute root-node (:coordinateName settings))))
+    (.getAttribute root-node (:attribute settings))))
 
 
 (defn get-distance-to-root
@@ -46,7 +47,7 @@
           (map  (fn [node]
                   (if (not (.isRoot tree node))
                     (let [parent-node (.getParent tree node)]
-                      (let [node-coord (.getAttribute node (:coordinateName settings)) parent-coord (.getAttribute parent-node (:coordinateName settings))]
+                      (let [node-coord (.getAttribute node (:attribute settings)) parent-coord (.getAttribute parent-node (:attribute settings))]
                         ;; :node001 {:startX 0.1 :startY 0.3 :endX 0.5 :endY 0.4 :length 0.71 }                        
                         (hash-map node {
                                         :startX ( get parent-coord 0 ) ; parent long
@@ -108,11 +109,11 @@
     {} ;; initial
     slice-heights))
 
-
+;; TODO
 (defn extract-trees
   "Make a collection of tree maps"
-  [settings]
-  (let [tree-importer (create-tree-importer (:trees settings))]
+  [settings trees]
+  (let [tree-importer (create-tree-importer trees)]
     (reduce
       (fn [tree-maps current-tree]
         (conj tree-maps
@@ -153,8 +154,8 @@
 (defn trees-loop
   "Go over the collection of tree maps calculating spatial stats
   @return: vector of maps with the same keys"
-  [settings]
-  (let [tree-maps (extract-trees settings) slice-heights (create-slice-heights tree-maps settings)]
+  [settings trees]
+  (let [tree-maps (extract-trees settings trees) slice-heights (create-slice-heights tree-maps settings)]
     (vec
       (pmap
         (fn [tree-map] (get-distances tree-map slice-heights))
@@ -229,8 +230,8 @@
 (defn parse-data
   "Parse, analyze and return formatted JSON, ready for plotting in frontend"
   []
-  (let [settings (s/get-settings)]
+  (let [settings (s/get-settings) trees (trees/get-trees-db) ]
     (format-data 
-      (trees-loop settings))))
+      (trees-loop settings trees))))
 
 

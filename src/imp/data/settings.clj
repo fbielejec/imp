@@ -8,7 +8,7 @@
 (def settings 
   (atom 
     {
-     :coordinateName nil
+     :attribute nil
      :burnin nil
      :nslices nil
      :mrsd nil

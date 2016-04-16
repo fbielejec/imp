@@ -12,6 +12,7 @@
   (:require [imp.data.settings :as s] )
   (:require [imp.data.trees :as t] )
   (:require [imp.data.attributes :as a])
+    (:require [imp.analysis.parser :as p])
   )
 
 
@@ -63,8 +64,13 @@
        (json-response (s/put-setting id value))))
 
 
+(defroutes results-routes
+  (GET "/results" []
+       (json-response (p/parse-data))))
+
+
 (def app
-  (-> (routes trees-routes attributes-routes settings-routes app-routes)
+  (-> (routes trees-routes attributes-routes settings-routes results-routes app-routes)
     ;    wrap-params
     ;    wrap-exception-handler
     wrap-json-params))

@@ -13,6 +13,7 @@
 
 (deftest test-trees
   (testing "test trees file uploading"
+            ; TODO: mock a resource
            (let [file  (slurp "/home/filip/Dropbox/ClojureProjects/imp-rest/resources/WNV_small.trees") ]
              ;; mock a PUT request
              (h/app 

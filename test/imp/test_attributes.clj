@@ -14,11 +14,9 @@
 (deftest test-attributes
   (let [expected-result (set ["rate" "location"])]
     
-    ;; --- REGULAR TESTS---;;
-    
     (testing "test location attributes parsing"
              (let [file  (slurp "/home/filip/Dropbox/ClojureProjects/imp-rest/resources/WNV_small.trees") ]
-               ;; mock a PUT request
+               ;; mock a PUT trees request
                (h/app 
                  (-> (mock/request
                        :put
@@ -26,16 +24,7 @@
                        (json/generate-string { :input file}))
                    (mock/content-type "application/json"))))  
              
-             ;; parse attributes 
-             (let [result (a/parse-attributes)]
-               (->
-                 (set result)
-                 (= expected-result)
-                 (is))))
-    
-    ;; --- REST TESTS---;;
-    
-    (testing "test location attributes GET request"
+             ;; test GET on attributes (tests the attributes parser)
              (let [response (h/app (mock/request :get "/attributes"))]
                (->
                  (set (read-string (:body response)))

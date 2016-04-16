@@ -3,10 +3,9 @@
 ;;
 
 (ns imp.utils.utils
-  (:require [clojure.pprint :refer (pprint)]  )
-  (:require [clojure.data.json :as json] )
-  (:require [imp.utils.time :as t])
-  )
+  (:require [clojure.pprint :refer (pprint)])
+  (:require [clojure.data.json :as json])
+  (:require [imp.utils.time :as t]))
 
 
 (defn p-print [coll]
@@ -49,14 +48,13 @@
 
 
 (defn update-values 
-  "Applies f To each value of the map "
+  "Applies f to each value of the map "
   [m f & args]
   (reduce 
     (fn [r [k v]] 
       (assoc r k (apply f v args)))
     {} 
-    m
-    ))
+    m))
 
 ;(defn collections-equal?
 ;  "Compare two collections assert if equal no matter the order or repetitions"
