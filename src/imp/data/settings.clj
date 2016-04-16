@@ -23,8 +23,9 @@
 (defn put-setting 
   "if key exists in atomic map update its value"
   [id value]
-  (if (contains? @settings id)
+  (if (contains? @settings (keyword id))
     (swap! settings assoc (keyword id) value)
-    value
+;    value
+(println "no setting with id" id "exists")
     ))
 

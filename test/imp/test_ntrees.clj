@@ -2,18 +2,18 @@
 ;;---@fbielejec
 ;;
 
-(ns imp.test-burnin
+(ns imp.test-ntrees
   (:require [clojure.test :refer :all])
   (:require [ring.mock.request :as mock] )
   (:require [clj-json.core :as json] )
   (:require [imp.routes.handler :as h])
   (:require [imp.data.trees :as t])
-  (:require [imp.data.burnin :as b])
+;  (:require [imp.data.ntrees :as n])
   )
 
 
-(deftest test-burnin
-  (testing "test max burnin attribute parsing"
+(deftest test-ntrees
+  (testing "test ntrees parsing"
            
            ;; mock a PUT trees request
            (let [file  (slurp "/home/filip/Dropbox/ClojureProjects/imp-rest/resources/WNV_small.trees") ]
@@ -24,8 +24,8 @@
                      (json/generate-string { :input file}))
                  (mock/content-type "application/json"))))        
            
-           ;; test GET on burnin (tests the burnin parser)
-           (let [expected-result 10 response (h/app (mock/request :get "/burnin"))]
+           ;; test GET on burnin (tests the ntrees parser)
+           (let [expected-result 10 response (h/app (mock/request :get "/ntrees"))]
              
              (->
                (read-string (:body response))
