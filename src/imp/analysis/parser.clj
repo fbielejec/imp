@@ -11,7 +11,6 @@
   (:require [imp.utils.time :as t])
   )
 
-
 ;;---CREATE TREE IMPORTER---;;
 
 (defn create-tree-importer
@@ -212,11 +211,18 @@
 (defn frontend-friendly-format 
   "format the data exacly as the D3 frontend expects it"
   [maps]
+  
+;  (u/p-print maps)
+  
+;  (u/p-print
   (-> maps
     (pair-with-key)
     (interleave-n)
     (name-value)
-    ))
+    )
+;  )
+  
+  )
 
 (defn format-data
   "format the data to conform to JSON format ready for D3 plotting"

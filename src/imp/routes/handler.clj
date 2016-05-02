@@ -12,8 +12,8 @@
   (:require [imp.data.settings :as s] )
   (:require [imp.data.trees :as t] )
   (:require [imp.data.attributes :as a])
-    (:require [imp.data.ntrees :as n])
-    (:require [imp.analysis.parser :as p])
+  (:require [imp.data.ntrees :as n])
+  (:require [imp.analysis.parser :as p])
   )
 
 
@@ -27,8 +27,7 @@
    :status (or status 200)
    :headers {"Content-Type" "application/json"}
    :body (json/generate-string data)
-   }
-  )
+   })
 
 
 (defroutes app-routes
@@ -61,6 +60,7 @@
          )))
 
 (defroutes settings-routes
+    ;; routes to set the settings
   (GET "/settings" []
        (json-response (s/get-settings)))
   
@@ -78,7 +78,5 @@
 
 (def app
   (-> (routes trees-routes attributes-routes ntrees-routes settings-routes results-routes app-routes)
-    ;    wrap-params
-    ;    wrap-exception-handler
     wrap-json-params))
 

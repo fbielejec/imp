@@ -1,11 +1,24 @@
 #!/bin/bash
 
-#curl -X PUT -H "Content-Type: application/json" \
-#    -d '{"id": "trees", "value": "/home/filip/Dropbox/ClojureProjects/imp-rest/resources/WNV_small.trees"}' \
-#    http://localhost:8080/settings
+# upload file content
+curl -i -X PUT -H "Content-Type: application/json" \
+    -d '{"input": "@/home/filip/Dropbox/ClojureProjects/imp-rest/resources/WNV_small.trees"}' \
+    http://localhost:8080/trees
 
 echo -e '\n'
 
+
+# server should respond with attributes and ntrees:
+curl -X GET http://localhost:8080/attributes
+
+echo -e '\n'
+
+curl -X GET http://localhost:8080/ntrees
+
+echo -e '\n'
+
+
+# put settings
 curl -X PUT -H "Content-Type: application/json" \
     -d '{"id" : "attribute", "value" : "location"}' \
     http://localhost:8080/settings
@@ -34,6 +47,6 @@ curl -X GET http://localhost:8080/settings
 
 echo -e '\n'
 
-curl -X GET http://localhost:8080/data
+# chew it and get results
+curl -X GET http://localhost:8080/results
 
-echo -e '\n'

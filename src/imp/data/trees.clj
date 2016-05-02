@@ -33,5 +33,7 @@
   "handle incoming "
   ; TODO: validate content? (does first line contain #NEXUS)
   [input]
-  (overwrite-trees-db input))
+  (overwrite-trees-db input)
+;  (get-trees-db)
+  )
 
