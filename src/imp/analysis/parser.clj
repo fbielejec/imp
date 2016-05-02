@@ -184,34 +184,13 @@
              values)))
        maps))
 
-;;TODO: this is the culprit 
 
 (defn interleave-n
   "Interleave n trees (first with first, second with second, etc)"
   [coll]
   (let [ ntrees (inc (count (nth coll 0 ))) ]
-  
-        ;;;;;;;;;;;;;;;;;
-    
-;    (u/p-print  
-;      
-;      (partition ntrees 
-;      (apply interleave coll )
-;                )
-;                )
-;    
-    
-    ;;;;;;;;;;;;;;;;;
-    
-    
     (partition ntrees 
-               (apply interleave coll )
-               
-               )
-    
-    )
-  
-  )
+               (apply interleave coll ))))
 
 
 (defn name-value
@@ -228,18 +207,17 @@
         )
       coll)))
 
+
 ;; TODO: 3 traversals, limit to 2
 (defn frontend-friendly-format 
   "format the data exacly as the D3 frontend expects it"
   [maps]
-  
   (-> maps
     (pair-with-key)
     (interleave-n)
     (name-value)
-    )
-  
-  )
+    ))
+
 
 (defn format-data
   "format the data to conform to JSON format ready for D3 plotting"
@@ -249,6 +227,7 @@
     (dateize-keys )
     (into (sorted-map))
     (frontend-friendly-format)))
+
 
 (defn parse-data
   "Parse, analyze and return formatted JSON, ready for plotting in frontend"
