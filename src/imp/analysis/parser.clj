@@ -184,13 +184,34 @@
              values)))
        maps))
 
+;;TODO: this is the culprit 
 
 (defn interleave-n
   "Interleave n trees (first with first, second with second, etc)"
   [coll]
-  (let [ ntrees (count (nth coll 0 ))]
+  (let [ ntrees (inc (count (nth coll 0 ))) ]
+  
+        ;;;;;;;;;;;;;;;;;
+    
+;    (u/p-print  
+;      
+;      (partition ntrees 
+;      (apply interleave coll )
+;                )
+;                )
+;    
+    
+    ;;;;;;;;;;;;;;;;;
+    
+    
     (partition ntrees 
-               (apply interleave coll ))))
+               (apply interleave coll )
+               
+               )
+    
+    )
+  
+  )
 
 
 (defn name-value
@@ -212,15 +233,11 @@
   "format the data exacly as the D3 frontend expects it"
   [maps]
   
-;  (u/p-print maps)
-  
-;  (u/p-print
   (-> maps
     (pair-with-key)
     (interleave-n)
     (name-value)
     )
-;  )
   
   )
 
