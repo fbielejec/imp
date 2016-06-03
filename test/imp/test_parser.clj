@@ -39,16 +39,18 @@
                     (let [result (p/parse-data) first-from-first (get-first-date-key result 0) first-from-last (get-first-date-key result (dec (count result))) ]
                       (is (= first-from-first first-from-last ))))
            
-           (testing "GET results"
-                    (let [response (h/app (mock/request :get "/results"))]
+           (testing "GET all results"
+                    (let [response (h/app (mock/request :get "/data/all"))]
                       (is (= (:status response) 200))))
            
            
            
-           (testing "mean distances"
+           (testing "GET mean distances"
                     (let [results (p/parse-mean-data)]
                       
+                      (u/p-print results)
                       
+;                      (is (= (:status response) 200))
                       
                       )
                     )
