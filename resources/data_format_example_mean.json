@@ -1,0 +1,13 @@
+{
+"values" : [
+             { "time"           : "1995-11-22T23:00:00.000Z",
+               "mean_distance"  : 24,
+               "lower_distance" : 12,
+               "upper_distance" : 34
+             },
+
+          ...
+
+          {x,y0,y1}
+]
+}

@@ -240,33 +240,57 @@
 ;; TODO: re-use results from parse-data trees-loop
 
 (defn get-mean-values-map
-  "Take the map of merged distances, return map with the same key and mean distances as values"
+  "Take the map of merged distances return map with mean and 95% CI"
   [merged-map]
-  (reduce
-    (fn [initial elem]
-      (assoc initial (key elem ) (u/mean (val elem) ) )
-      ) ;fn
-    {} ;initial
-    merged-map))
+    (map
+      (fn [elem]
+        (let [mean-distance (u/mean (val elem) )  std-distance (u/stdev (val elem) mean-distance) interval (* 1.96 std-distance)]
+          {
+           :time (key elem )
+           :mean_distance mean-distance
+           :lower_distance (- mean-distance interval)
+           :upper_distance (+ mean-distance interval)
+           }
+        )
+        )
+      merged-map))
+
+(defn format-mean-data
+ "format to JSON-friendly"
+  [mean-values-map]
+  {
+  :values (vec mean-values-map)
+  }
+  )
+
+
+;(defn get-mean-values-map
+;  "Take the map of merged distances, return map with the same key and mean distances as values"
+;  [merged-map]
+;  (reduce
+;    (fn [initial elem]
+;      (assoc initial (key elem ) (u/mean (val elem) ) )
+;      ) ;fn
+;    {} ;initial
+;    merged-map))
+
 
 
 (defn parse-mean-data
   "Parse, analyze and return mean distances with 95% CI to a formatted JSON, ready for plotting in frontend"
   []
-  (let [settings (s/get-settings) trees (trees/get-trees-db) ]
-    (let [trees-dist-map  (trees-loop settings trees)]
-      (let [merged-map (apply u/merge-maps-by-keys trees-dist-map)]
+  (let [settings (s/get-settings) trees (trees/get-trees-db) trees-dist-map  (trees-loop settings trees) ]
+      (let [merged-map (apply u/merge-maps-by-keys trees-dist-map) dateized-merged-map (dateize-keys merged-map) ]
         
         (u/p-print
-
-          (get-mean-values-map merged-map)
-
-        )
+          
+          (format-mean-data
+          (get-mean-values-map dateized-merged-map)
+        ))
     
         
         
         )
-    )
     
     ))
 

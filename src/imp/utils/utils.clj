@@ -66,3 +66,22 @@
   "calculate mean value of data"
   [data]
   (/ (reduce + data) (count data)))
+
+(defn stdev [coll avg]
+  (let [ squares (for [x coll]
+                   (let [x-avg (- x avg)]
+                     (* x-avg x-avg)))
+        total (count coll)]
+    (-> (/ (apply + squares)
+           (- total 1))
+      (Math/sqrt))))
+
+;(defn standard-deviation [coll]
+;  (let [avg (mean coll)
+;        squares (for [x coll]
+;                  (let [x-avg (- x avg)]
+;                    (* x-avg x-avg)))
+;        total (count coll)]
+;    (-> (/ (apply + squares)
+;           (- total 1))
+;      (Math/sqrt))))
