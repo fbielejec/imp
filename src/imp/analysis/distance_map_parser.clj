@@ -2,14 +2,18 @@
 ;;---@fbielejec
 ;;
 
-(ns imp.analysis.parser
+(ns imp.analysis.distance-map-parser
   (:import java.io.FileReader)
   (:import jebl.evolution.io.NexusImporter)
   (:require [imp.data.trees :as trees])
   (:require [imp.data.settings :as s])
   (:require [imp.utils.utils :as u])
-  (:require [imp.utils.time :as t])
+  ;  (:require [imp.utils.time :as t])
   )
+
+;; atom with parsed distances map
+(def trees-dist-map (atom {}))
+
 
 ;;---CREATE TREE IMPORTER---;;
 
@@ -18,8 +22,7 @@
   [file]
   (->> file
     (new FileReader )
-    (new NexusImporter))
-  )
+    (new NexusImporter)))
 
 ;;---PARSE TO JSON---;;
 
@@ -161,116 +164,11 @@
         tree-maps))))
 
 
-(defn dateize-keys
-  "transforms map keys to date strings"
-  [m]
-  (let [end-date (t/parse-simple-date (s/get-setting :mrsd))]
-    (letfn [(get-date [k] (t/get-slice-date k end-date))]
-      (reduce
-        (fn[km k]
-          (assoc km (get-date k) (get m k))) ;fn
-        {} ;initial
-        (keys m)))))
-
-
-(defn pair-with-key
-  "Carry the key over to every value of map"
-  [maps]
-  (map (fn [ m]
-         ( let [k (key m) values (val m) ]
-           (map
-             (fn [v]
-               (hash-map :time k :distance v))
-             values)))
-       maps))
-
-
-(defn interleave-n
-  "Interleave n trees (first with first, second with second, etc)"
-  [coll]
-  (let [ ntrees (inc (count (nth coll 0 ))) ]
-    (partition ntrees 
-               (apply interleave coll ))))
-
-
-(defn name-value
-  "add name and value keys"
-  [coll]
-  (let [i (atom 0)]
-    (map
-      (fn [elem]
-        (swap! i inc)
-        {
-         :name (str "tree_" @i )
-         :values elem
-         }
-        )
-      coll)))
-
-
-;; TODO: 3 traversals, limit to 2
-(defn frontend-friendly-format 
-  "format the data exacly as the D3 frontend expects it"
-  [maps]
-  (-> maps
-    (pair-with-key)
-    (interleave-n)
-    (name-value)
-    ))
-
-
-(defn format-data
-  "format the data to conform to JSON format ready for D3 plotting"
-  [maps-vector]
-  (->> maps-vector
-    (apply u/merge-maps-by-keys)
-    (dateize-keys )
-    (into (sorted-map))
-    (frontend-friendly-format)))
-
-
-(defn parse-data
-  "Parse, analyze and return all tree distances into formatted JSON, ready for plotting in frontend"
+(defn get-trees-dist-map
+  "To avoid costly recomputing, get the trees-dist-map singleton"
   []
-  (let [settings (s/get-settings) trees (trees/get-trees-db) ]
-    (format-data 
-      (trees-loop settings trees))))
-
-
-(defn get-mean-values-map
-  "Take the map of merged distances return map with mean and 95% CI"
-  [merged-map]
-  (map
-    (fn [elem]
-      (let [mean-distance (u/mean (val elem) )  std-distance (u/stdev (val elem) mean-distance) interval (* 1.96 std-distance)]
-        {
-         :time (key elem )
-         :mean_distance mean-distance
-         :lower_distance (- mean-distance interval)
-         :upper_distance (+ mean-distance interval)
-         }))
-    merged-map))
-
-
-(defn format-mean-data
-  "format to JSON-friendly"
-  [mean-values-map]
-  {:values (vec mean-values-map)})
-
-
-;; TODO: re-use results from parse-data trees-loop
-(defn parse-mean-data
-  "Parse, analyze and return mean distances with 95% CI to a formatted JSON, ready for plotting in frontend"
-  []
-  (let [settings (s/get-settings) trees (trees/get-trees-db) trees-dist-map  (trees-loop settings trees) ]
-    (let [distances-map
-          (->>
-            (apply u/merge-maps-by-keys trees-dist-map)
-            (dateize-keys)
-            (into (sorted-map)))]
-      (format-mean-data (get-mean-values-map distances-map)))))
-
-
-
-
-
+  (if (empty? @trees-dist-map)
+    (let [settings (s/get-settings) trees (trees/get-trees-db)]
+      (trees-loop settings trees)
+      ) ;; true
+    @trees-dist-map))

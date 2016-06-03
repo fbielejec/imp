@@ -9,8 +9,9 @@
   (:require [imp.utils.utils :as u])
   (:require [imp.data.trees :as t])
   (:require [imp.data.settings :as s])
-  (:require [imp.analysis.parser :as p])
   (:require [imp.routes.handler :as h])
+  (:require [imp.analysis.mean-distance-parser :as pm])
+  (:require [imp.analysis.all-distances-parser :as pa])
   )
 
 
@@ -36,9 +37,9 @@
            
            
            (testing "date-keys in all results map have the same order"
-                    (let [result (p/parse-data) first-from-first (get-first-date-key result 0) first-from-last (get-first-date-key result (dec (count result))) ]
+                    (let [result (pa/parse-all-data) first-from-first (get-first-date-key result 0) first-from-last (get-first-date-key result (dec (count result))) ]
                       (is (= first-from-first first-from-last ))))
-
+           
            
            (testing "GET all results"
                     (let [response (h/app (mock/request :get "/data/all"))]
@@ -46,15 +47,14 @@
            
            
            (testing "mean distances map has correct number of sices"
-                    (let [results (p/parse-mean-data)]
+                    (let [results (pm/parse-mean-data)]
                       (is (= (count (flatten (vals results))) (s/get-setting :nslices)))))
-
+           
            (testing "GET mean results"
                     (let [response (h/app (mock/request :get "/data/mean"))]
-                      (is (= (:status response) 200))))
-
-           
-           ))
+                      (is (= (:status response) 200)))))
+  
+  )
 
 
 

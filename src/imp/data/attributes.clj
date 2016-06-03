@@ -5,13 +5,13 @@
 (ns imp.data.attributes
   (:use clojure.set)
   (:require [imp.data.trees :as t])
-  (:require [imp.analysis.parser :as p])
+  (:require [imp.analysis.distance-map-parser :as pm])
   )
 
 (defn parse-attributes
   "Return a unique set of attribute names"
   []
-  (let [trees-file (t/get-trees-db) tree-importer (p/create-tree-importer trees-file) tree (.importNextTree tree-importer)]
+  (let [trees-file (t/get-trees-db) tree-importer (pm/create-tree-importer trees-file) tree (.importNextTree tree-importer)]
     (reduce
       (fn [unique-attributes node]
         (if (not (.isRoot tree node))

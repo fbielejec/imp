@@ -13,7 +13,8 @@
   (:require [imp.data.trees :as t] )
   (:require [imp.data.attributes :as a])
   (:require [imp.data.ntrees :as n])
-  (:require [imp.analysis.parser :as p])
+  (:require [imp.analysis.mean-distance-parser :as pm])
+  (:require [imp.analysis.all-distances-parser :as pa])
   )
 
 
@@ -60,7 +61,7 @@
          )))
 
 (defroutes settings-routes
-    ;; routes to set the settings
+  ;; routes to set the settings
   (GET "/settings" []
        (json-response (s/get-settings)))
   
@@ -72,14 +73,15 @@
 
 
 (defroutes results-routes
+  ;; routes with results
   (GET "/data/all" []
-       (json-response (p/parse-data))))
-
-(defroutes mean-results-routes
+       (json-response (pa/parse-all-data)))
+  
   (GET "/data/mean" []
-       (json-response (p/parse-mean-data))))
+       (json-response (pm/parse-mean-data))))
+
 
 (def app
-  (-> (routes trees-routes attributes-routes ntrees-routes settings-routes results-routes mean-results-routes app-routes)
+  (-> (routes trees-routes attributes-routes ntrees-routes settings-routes results-routes app-routes)
     wrap-json-params))
 
