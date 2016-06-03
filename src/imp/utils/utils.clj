@@ -32,7 +32,7 @@
                        (* (Math/cos lat1-r) (Math/cos lat2-r) (Math/cos (- long1-r long2-r)))))))))
 
 
-(defn merge-maps [& maps]
+(defn merge-maps-by-keys [& maps]
   "Merge map values by keys: {:key [val1 val2 ...]}"
   (reduce (fn [m1 m2]
             (reduce (fn [m [k v]]
@@ -61,3 +61,8 @@
 ;  [coll1 coll2]
 ;  (= coll1 coll1))
 
+
+(defn mean
+  "calculate mean value of data"
+  [data]
+  (/ (reduce + data) (count data)))

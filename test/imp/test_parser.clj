@@ -43,4 +43,30 @@
                     (let [response (h/app (mock/request :get "/results"))]
                       (is (= (:status response) 200))))
            
+           
+           
+           (testing "mean distances"
+                    (let [results (p/parse-mean-data)]
+                      
+                      
+                      
+                      )
+                    )
+           
            ))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

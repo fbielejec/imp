@@ -68,10 +68,10 @@
   (apply max (map :nodeHeight (vals branches-map))))
 
 
-(defn create-slice-heights [branches-map settings]
-  "Returns a sequence of length nslices"
-  (let [ minim (get-min-start-time branches-map) maxim (get-max-start-time branches-map) by (/ ( - maxim minim)  (:nslices settings) ) ]
-    (range minim maxim by)))
+;(defn create-slice-heights [branches-map settings]
+;  "Returns a sequence of length nslices"
+;  (let [ minim (get-min-start-time branches-map) maxim (get-max-start-time branches-map) by (/ ( - maxim minim)  (:nslices settings) ) ]
+;    (range minim maxim by)))
 
 
 (defn filter-by-slice
@@ -223,17 +223,83 @@
   "format the data to conform to JSON format ready for D3 plotting"
   [maps-vector]
   (->> maps-vector
-    (apply u/merge-maps)
+    (apply u/merge-maps-by-keys)
     (dateize-keys )
     (into (sorted-map))
     (frontend-friendly-format)))
 
 
 (defn parse-data
-  "Parse, analyze and return formatted JSON, ready for plotting in frontend"
+  "Parse, analyze and return all tree distances into formatted JSON, ready for plotting in frontend"
   []
   (let [settings (s/get-settings) trees (trees/get-trees-db) ]
     (format-data 
       (trees-loop settings trees))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; TODO: re-use results from parse-data trees-loop
+
+(defn get-mean-values-map
+  "Take the map of merged distances, return map with the same key and mean distances as values"
+  [merged-map]
+  (reduce
+    (fn [initial elem]
+      (assoc initial (key elem ) (u/mean (val elem) ) )
+      ) ;fn
+    {} ;initial
+    merged-map))
+
+
+(defn parse-mean-data
+  "Parse, analyze and return mean distances with 95% CI to a formatted JSON, ready for plotting in frontend"
+  []
+  (let [settings (s/get-settings) trees (trees/get-trees-db) ]
+    (let [trees-dist-map  (trees-loop settings trees)]
+      (let [merged-map (apply u/merge-maps-by-keys trees-dist-map)]
+        
+        (u/p-print
+
+          (get-mean-values-map merged-map)
+
+        )
+    
+        
+        
+        )
+    )
+    
+    ))
+
+
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
