@@ -35,25 +35,24 @@
              (s/put-setting :mrsd s4))
            
            
-           (testing "date-keys in results map have the same order"
+           (testing "date-keys in all results map have the same order"
                     (let [result (p/parse-data) first-from-first (get-first-date-key result 0) first-from-last (get-first-date-key result (dec (count result))) ]
                       (is (= first-from-first first-from-last ))))
+
            
            (testing "GET all results"
                     (let [response (h/app (mock/request :get "/data/all"))]
                       (is (= (:status response) 200))))
            
            
-           
-           (testing "GET mean distances"
+           (testing "mean distances map has correct number of sices"
                     (let [results (p/parse-mean-data)]
-                      
-                      (u/p-print results)
-                      
-;                      (is (= (:status response) 200))
-                      
-                      )
-                    )
+                      (is (= (count (flatten (vals results))) (s/get-setting :nslices)))))
+
+           (testing "GET mean results"
+                    (let [response (h/app (mock/request :get "/data/mean"))]
+                      (is (= (:status response) 200))))
+
            
            ))
 

@@ -80,6 +80,6 @@
        (json-response (p/parse-mean-data))))
 
 (def app
-  (-> (routes trees-routes attributes-routes ntrees-routes settings-routes results-routes app-routes)
+  (-> (routes trees-routes attributes-routes ntrees-routes settings-routes results-routes mean-results-routes app-routes)
     wrap-json-params))
 
