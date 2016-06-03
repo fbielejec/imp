@@ -3,8 +3,6 @@
 ;;
 
 (ns imp.analysis.all-distances-parser
-  ;  (:import java.io.FileReader)
-  ;  (:import jebl.evolution.io.NexusImporter)
   ;  (:require [imp.data.trees :as trees])
   (:require [imp.data.settings :as s])
   (:require [imp.utils.utils :as u])
@@ -59,25 +57,12 @@
     ))
 
 
-;; TODO: repeated, move to utils
-(defn dateize-keys
-  "transforms map keys to date strings"
-  [m]
-  (let [end-date (t/parse-simple-date (s/get-setting :mrsd))]
-    (letfn [(get-date [k] (t/get-slice-date k end-date))]
-      (reduce
-        (fn[km k]
-          (assoc km (get-date k) (get m k))) ;fn
-        {} ;initial
-        (keys m)))))
-
-
 (defn format-data
   "format the data to conform to JSON format ready for D3 plotting"
   [maps-vector]
   (->> maps-vector
     (apply u/merge-maps-by-keys)
-    (dateize-keys )
+    (t/dateize-keys (s/get-setting :mrsd))
     (into (sorted-map))
     (frontend-friendly-format)))
 
@@ -87,10 +72,5 @@
   []
   (let [trees-dist-map  (d/get-trees-dist-map)]
     (format-data trees-dist-map)))
-
-
-
-
-
 
 

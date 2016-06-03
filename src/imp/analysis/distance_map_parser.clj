@@ -15,15 +15,6 @@
 (def trees-dist-map (atom {}))
 
 
-;;---CREATE TREE IMPORTER---;;
-
-;(defn create-tree-importer
-;  "Create JEBL tree importer"
-;  [file]
-;  (->> file
-;    (new FileReader )
-;    (new NexusImporter)))
-
 ;;---PARSE TO JSON---;;
 
 (defn get-root-coords [tree settings]
@@ -69,12 +60,6 @@
 
 (defn get-max-start-time [branches-map]
   (apply max (map :nodeHeight (vals branches-map))))
-
-
-;(defn create-slice-heights [branches-map settings]
-;  "Returns a sequence of length nslices"
-;  (let [ minim (get-min-start-time branches-map) maxim (get-max-start-time branches-map) by (/ ( - maxim minim)  (:nslices settings) ) ]
-;    (range minim maxim by)))
 
 
 (defn filter-by-slice
@@ -172,3 +157,4 @@
       (trees-loop settings trees)
       ) ;; true
     @trees-dist-map))
+

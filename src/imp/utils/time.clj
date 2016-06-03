@@ -43,13 +43,13 @@
       "YYYY/MM/dd")))
 
 
-;(defn dateize-keys
-;  "transforms map keys to date strings given a starting date (mrsd)"
-;  [mrsd m]
-;  (let [end-date (parse-simple-date mrsd  )]
-;    (letfn [(get-date [k] (get-slice-date k end-date))]
-;      (reduce
-;        (fn[km k]
-;          (assoc km (get-date k) (get m k))) ;fn
-;        {} ;initial
-;        (keys m)))))
+(defn dateize-keys
+  "transforms map keys to date strings given a starting date (mrsd)"
+  [mrsd m]
+  (let [end-date (parse-simple-date mrsd)]
+    (letfn [(get-date [k] (get-slice-date k end-date))]
+      (reduce
+        (fn[km k]
+          (assoc km (get-date k) (get m k))) ;fn
+        {} ;initial
+        (keys m)))))
