@@ -1,6 +1,6 @@
 (ns imp.data.trees
-;  (:import java.io.FileReader)
-;  (:import jebl.evolution.io.NexusImporter)
+  (:import java.io.FileReader)
+  (:import jebl.evolution.io.NexusImporter)
   )
 
 
@@ -36,4 +36,14 @@
   (overwrite-trees-db input)
 ;  (get-trees-db)
   )
+
+
+;;---CREATE TREE IMPORTER---;;
+
+(defn create-tree-importer
+  "Create JEBL tree importer"
+  [file]
+  (->> file
+    (new FileReader )
+    (new NexusImporter)))
 

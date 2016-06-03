@@ -3,9 +3,9 @@
 ;;
 
 (ns imp.analysis.distance-map-parser
-  (:import java.io.FileReader)
-  (:import jebl.evolution.io.NexusImporter)
-  (:require [imp.data.trees :as trees])
+;  (:import java.io.FileReader)
+;  (:import jebl.evolution.io.NexusImporter)
+  (:require [imp.data.trees :as t])
   (:require [imp.data.settings :as s])
   (:require [imp.utils.utils :as u])
   ;  (:require [imp.utils.time :as t])
@@ -17,12 +17,12 @@
 
 ;;---CREATE TREE IMPORTER---;;
 
-(defn create-tree-importer
-  "Create JEBL tree importer"
-  [file]
-  (->> file
-    (new FileReader )
-    (new NexusImporter)))
+;(defn create-tree-importer
+;  "Create JEBL tree importer"
+;  [file]
+;  (->> file
+;    (new FileReader )
+;    (new NexusImporter)))
 
 ;;---PARSE TO JSON---;;
 
@@ -115,7 +115,7 @@
 (defn extract-trees
   "Make a collection of tree maps"
   [settings trees]
-  (let [tree-importer (create-tree-importer trees)]
+  (let [tree-importer (t/create-tree-importer trees)]
     (reduce
       (fn [tree-maps current-tree]
         (conj tree-maps
@@ -168,7 +168,7 @@
   "To avoid costly recomputing, get the trees-dist-map singleton"
   []
   (if (empty? @trees-dist-map)
-    (let [settings (s/get-settings) trees (trees/get-trees-db)]
+    (let [settings (s/get-settings) trees (t/get-trees-db)]
       (trees-loop settings trees)
       ) ;; true
     @trees-dist-map))
