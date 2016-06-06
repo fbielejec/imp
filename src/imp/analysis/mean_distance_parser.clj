@@ -32,12 +32,7 @@
 (defn format-data
   "return JSON-friendly format"
   [mean-values-map]
-  
-;  {:values 
-   (vec mean-values-map)
-;   }
-  
-  )
+   (vec mean-values-map))
 
 
 (defn parse-mean-data

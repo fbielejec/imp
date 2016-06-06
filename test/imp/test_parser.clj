@@ -52,12 +52,7 @@
            
            (testing "GET mean results"
                     (let [response (h/app (mock/request :get "/data/mean"))]
-
-
                       (is (= (:status response) 200))
-
-;           (println (:body response) )         
-                      
                       ))
            
            ))
