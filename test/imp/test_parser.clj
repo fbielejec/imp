@@ -48,13 +48,19 @@
            
            (testing "mean distances map has correct number of sices"
                     (let [results (pm/parse-mean-data)]
-                      (is (= (count (flatten (vals results))) (s/get-setting :nslices)))))
+                      (is (= (count  results   ) (s/get-setting :nslices)))))
            
            (testing "GET mean results"
                     (let [response (h/app (mock/request :get "/data/mean"))]
-                      (is (= (:status response) 200)))))
-  
-  )
+
+
+                      (is (= (:status response) 200))
+
+;           (println (:body response) )         
+                      
+                      ))
+           
+           ))
 
 
 
