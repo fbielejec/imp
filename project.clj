@@ -4,7 +4,8 @@
 ;  :repositories {"local" ~(str (.toURI (java.io.File. "maven_repository")))}  
 ;:repositories {"local" "file:maven_repository"}  
 
-:repositories [["local" "file:maven_repository"]
+:repositories [
+;               ["local" "file:maven_repository"]
                ["jebl2" {:url "http://www.stat.ubc.ca/~bouchard/maven/"
                          :snapshots false
                          :sign-releases false
