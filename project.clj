@@ -17,8 +17,8 @@
    [clj-json "0.5.3"]
    [org.clojure/data.json "0.2.6"]
    [simple-time "0.2.0"]
-;   [local/jebl "0.4"]
- [jebl "0.4"]
+   [local/jebl "0.4"]
+;   [jebl "0.4"]
    [environ "1.0.0"]
    ]
   :min-lein-version "2.6.0"
