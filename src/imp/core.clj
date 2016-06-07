@@ -24,6 +24,8 @@
   
    (let [port (Integer. (or port (env :port) 8080))]
   
+     (println "Port: " port)
+     
   (run-jetty #'handler/app {:port port})
   
   )
