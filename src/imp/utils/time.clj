@@ -3,7 +3,6 @@
 ;;
 
 (ns imp.utils.time
-  ;; https://github.com/mbossenbroek/simple-time
   (:require [simple-time.core :as t] )
   )
 

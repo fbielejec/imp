@@ -3,13 +3,9 @@
 ;;
 
 (ns imp.analysis.mean-distance-parser
-  ;  (:import java.io.FileReader)
-  ;  (:import jebl.evolution.io.NexusImporter)
-  ;  (:require [imp.data.trees :as trees])
   (:require [imp.data.settings :as s])
   (:require [imp.utils.utils :as u])
   (:require [imp.utils.time :as t])
-  
   (:require [imp.analysis.distance-map-parser :as d])
   )
 

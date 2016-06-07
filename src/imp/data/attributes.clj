@@ -5,7 +5,6 @@
 (ns imp.data.attributes
   (:use clojure.set)
   (:require [imp.data.trees :as t])
-;  (:require [imp.analysis.distance-map-parser :as pm])
   )
 
 (defn parse-attributes

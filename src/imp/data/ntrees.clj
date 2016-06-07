@@ -3,9 +3,7 @@
 ;;
 
 (ns imp.data.ntrees
-;  (:use clojure.set)
   (:require [imp.data.trees :as t])
-;  (:require [imp.analysis.distance-map-parser :as pm])
   )
 
 (defn get-ntrees
