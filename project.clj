@@ -5,7 +5,7 @@
 ;:repositories {"local" "file:maven_repository"}  
 
 :repositories [["local" "file:maven_repository"]
-               ["jebl2" {:url "http://www.stat.ubc.ca/~bouchard/maven/jebl/jebl/2.0/"
+               ["jebl2" {:url "http://www.stat.ubc.ca/~bouchard/maven/jebl/"
                          :snapshots false
                          :sign-releases false
                          :checksum :fail
