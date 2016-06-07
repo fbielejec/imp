@@ -37,7 +37,7 @@
             ]
 ;  :hooks [environ.leiningen.hooks]
   :profiles {
-             :uberjar {:aot :all}
+             :uberjar {:main imp.core, :aot :all}
              :test {:dependencies [
                                    [ring/ring-mock "0.3.0"]
                                    ]}
