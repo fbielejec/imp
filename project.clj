@@ -33,6 +33,7 @@
             ]
   
   :main imp.core 
+  :aot [imp.core]
   )
 
 
