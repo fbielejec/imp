@@ -146,6 +146,12 @@
         tree-maps))))
 
 
+(defn clear-trees-dist-map
+  "Clears the atom"
+  []
+  (reset! trees-dist-map {}))
+
+
 (defn get-trees-dist-map
   "To avoid costly recomputing, fill and subsequently deref the trees-dist-map atom (singleton pattern like)"
   []

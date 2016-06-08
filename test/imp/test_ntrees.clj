@@ -16,7 +16,7 @@
   (testing "test ntrees parsing"
            
            ;; mock a PUT trees request
-           (let [file  (slurp "/home/filip/Dropbox/ClojureProjects/imp-rest/resources/WNV_small.trees") ]
+           (let [file  (slurp "test/resources/WNV_small.trees") ]
              (h/app 
                (-> (mock/request
                      :put

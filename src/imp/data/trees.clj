@@ -1,6 +1,7 @@
 (ns imp.data.trees
   (:import java.io.FileReader)
   (:import jebl.evolution.io.NexusImporter)
+;  (:require [imp.analysis.clear-atoms :as ca])
   )
 
 
@@ -18,9 +19,11 @@
 
 
 (defn delete-trees-db
-  "Explicitely delete db-trees file"
+  "Explicitely delete db-trees file and clear all atomic singletons in the analysis package"
   []
-  (.delete @trees-db))
+  (.delete @trees-db)
+;  (ca/clear-all)
+  )
 
 
 (defn get-trees-db
@@ -31,11 +34,8 @@
 
 (defn handle-upload
   "handle incoming "
-  ; TODO: validate content? (does first line contain #NEXUS)
   [input]
-  (overwrite-trees-db input)
-;  (get-trees-db)
-  )
+  (overwrite-trees-db input))
 
 
 ;;---CREATE TREE IMPORTER---;;

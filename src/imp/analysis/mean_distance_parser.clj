@@ -12,6 +12,7 @@
 ;; atom with mean data vector
 (def data-mean (atom []))
 
+
 (defn get-mean-values-map
   "Take the map of merged distances return map with mean and 95% CI"
   [merged-map]
@@ -31,6 +32,12 @@
   "return JSON-friendly format"
   [mean-values-map]
   (vec mean-values-map))
+
+
+(defn clear-data-mean
+  "Clears the atom"
+  []
+  (reset! data-mean []))
 
 
 (defn parse-data-mean

@@ -75,6 +75,12 @@
     (format-data trees-dist-map)))
 
 
+(defn clear-data-all
+  "Clears the atom"
+  []
+  (reset! data-all []))
+
+
 (defn get-data-all
   "To avoid costly recomputing, fill and on subsequent calls get the data-all atom (something like a singleton pattern)"
   []

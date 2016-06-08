@@ -28,7 +28,7 @@
 (deftest test-parser
   (testing "test parser"
            ;; mock inputs
-           (let [input  (slurp "/home/filip/Dropbox/ClojureProjects/imp-rest/resources/WNV_small.trees") s1 "location" s2 1 s3 10 s4 2005.3]
+           (let [input  (slurp "test/resources/WNV_small.trees") s1 "location" s2 1 s3 10 s4 2005.3]
              (t/overwrite-trees-db input)
              (s/put-setting :attribute s1)
              (s/put-setting :burnin s2)
