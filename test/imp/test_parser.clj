@@ -36,8 +36,18 @@
              (s/put-setting :mrsd s4))
            
            
+           ;; --- DATA ALL --- ;;
+           
+           
+           (testing "call to get-data-all fills the atom for future GET calls"
+                    (pa/get-data-all)
+                    (is (-> (deref pa/data-all)
+                          (empty?)
+                          (not))))
+           
+           
            (testing "date-keys in all results map have the same order"
-                    (let [result (pa/parse-all-data) first-from-first (get-first-date-key result 0) first-from-last (get-first-date-key result (dec (count result))) ]
+                    (let [result (pa/get-data-all) first-from-first (get-first-date-key result 0) first-from-last (get-first-date-key result (dec (count result))) ]
                       (is (= first-from-first first-from-last ))))
            
            
@@ -46,14 +56,25 @@
                       (is (= (:status response) 200))))
            
            
+           ;; --- DATA MEAN --- ;;
+           
+           
+           (testing "call to get-data-mean fills the atom for future GET calls"
+                    (pm/get-data-mean)
+                    (is (-> (deref pm/data-mean)
+                          (empty?)
+                          (not))))
+           
+           
            (testing "mean distances map has correct number of sices"
-                    (let [results (pm/parse-mean-data)]
-                      (is (= (count  results   ) (s/get-setting :nslices)))))
+                    (let [results (pm/get-data-mean)]
+                      (is (= (count results) (s/get-setting :nslices)))))
+           
            
            (testing "GET mean results"
                     (let [response (h/app (mock/request :get "/data/mean"))]
-                      (is (= (:status response) 200))
-                      ))
+                      (is (= (:status response) 200))))
+           
            
            ))
 

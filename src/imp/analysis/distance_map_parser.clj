@@ -147,11 +147,11 @@
 
 
 (defn get-trees-dist-map
-  "To avoid costly recomputing, get the trees-dist-map singleton"
+  "To avoid costly recomputing, fill and subsequently deref the trees-dist-map atom (singleton pattern like)"
   []
   (if (empty? @trees-dist-map)
     (let [settings (s/get-settings) trees (t/get-trees-db)]
-      (trees-loop settings trees)
+      (reset! trees-dist-map (trees-loop settings trees))
       ) ;; true
     @trees-dist-map))
 

@@ -9,6 +9,8 @@
   (:require [imp.analysis.distance-map-parser :as d])
   )
 
+;; atom with all data vector
+(def data-all (atom []))
 
 (defn pair-with-key
   "Carry the key over to every value of map"
@@ -66,10 +68,20 @@
     (frontend-friendly-format)))
 
 
-(defn parse-all-data
+(defn parse-data-all
   "Parse, analyze and return all tree distances into formatted JSON, ready for plotting in frontend"
   []
   (let [trees-dist-map  (d/get-trees-dist-map)]
     (format-data trees-dist-map)))
+
+
+(defn get-data-all
+  "To avoid costly recomputing, fill and on subsequent calls get the data-all atom (something like a singleton pattern)"
+  []
+  (if (empty? @data-all)
+    (reset! data-all (parse-data-all)) ;; true
+    @data-all ;; false
+    ))
+
 
 

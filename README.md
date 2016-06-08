@@ -1,7 +1,8 @@
 # Imp
 
-RESTfull web-app for calculating and displaying spatial statistics
-https://tree-imp.herokuapp.com/
+Web-app for calculating and displaying spatial statistics.
+Backend implemented in Clojure, frontend in React + D3, deployed on Heroku.
+http://tree-imp.herokuapp.com/
 
 ## Usage
 

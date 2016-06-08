@@ -75,10 +75,10 @@
 (defroutes results-routes
   ;; routes with results
   (GET "/data/all" []
-       (json-response (pa/parse-all-data)))
+       (json-response (pa/get-data-all)))
   
   (GET "/data/mean" []
-       (json-response (pm/parse-mean-data))))
+       (json-response (pm/get-data-mean))))
 
 
 (def app
