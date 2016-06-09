@@ -93,7 +93,7 @@
     {} ;; initial
     slice-heights))
 
-
+;; TODO: memory hungry?
 (defn extract-trees
   "Make a collection of tree maps"
   [settings trees]

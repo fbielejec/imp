@@ -6,6 +6,7 @@
   (:require [imp.data.trees :as t])
   )
 
+;; TODO: memory issues? Refactor to .importNext
 (defn get-ntrees
   "Return the number of trees in db"
   []
