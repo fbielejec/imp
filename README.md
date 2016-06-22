@@ -1,3 +1,5 @@
+<img src="http://dl.dropboxusercontent.com/u/5169517/Screenshot.png" width="500" align="center">
+
 # Imp
 
 Web-app for calculating and displaying spatial statistics.
