@@ -14,12 +14,6 @@ java -jar imp.jar
 
 Point browser to http://localhost:8080/
 
-### Dev
-
-lein run
-
-lein test
-
 ## License
 
 Copyright © 2016 @fbielejec
