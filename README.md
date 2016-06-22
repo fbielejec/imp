@@ -10,11 +10,13 @@ Packaged as an uberjar to run locally: https://dl.dropboxusercontent.com/u/51695
 
 ## Usage
 
-lein run
+java -jar imp.jar
 
 Point browser to http://localhost:8080/
 
 ### Dev
+
+lein run
 
 lein test
 
