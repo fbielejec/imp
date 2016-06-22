@@ -3,11 +3,10 @@
 # Imp
 
 Web-app for calculating and displaying spatial statistics.
-Backend implemented in Clojure, frontend in React + D3, deployed on Heroku.
-http://tree-imp.herokuapp.com/
+Backend implemented in Clojure, frontend in React + D3. 
 
-Run it locally:
-https://dl.dropboxusercontent.com/u/5169517/imp.jar
+Deployed on Heroku: http://tree-imp.herokuapp.com/
+Can also be run locally as uberjar: https://dl.dropboxusercontent.com/u/5169517/imp.jar
 
 ## Usage
 
