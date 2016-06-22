@@ -2,7 +2,7 @@
 
 # Imp
 
-Web-app for calculating and displaying spatial statistics.
+Web-app for calculating and displaying spatial statistics from BEAST tree distributions.
 Backend implemented in Clojure, frontend in React + D3. 
 
 Deployed on Heroku: http://tree-imp.herokuapp.com/ <br />
