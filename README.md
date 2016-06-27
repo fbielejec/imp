@@ -11,7 +11,7 @@ Packaged as an uberjar to run locally: https://dl.dropboxusercontent.com/u/51695
 
 ## Usage
 
-See the [tutorial](http://rega.kuleuven.be/cev/ecv/software/SpreaD3_tutorial).
+See the [tutorial](https://rega.kuleuven.be/cev/ecv/tutorials/tree-imp-tutorial).
 
 ## License
 
