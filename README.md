@@ -1,6 +1,7 @@
 <img src="http://dl.dropboxusercontent.com/u/5169517/Screenshot.png" width="500" align="center">
 
 # Imp
+Version: 0.0.9, 2016 <br />
 
 Web-app for calculating and displaying spatial statistics from BEAST tree distributions.
 Backend implemented in Clojure, frontend in React + D3. 
