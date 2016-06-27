@@ -11,9 +11,7 @@ Packaged as an uberjar to run locally: https://dl.dropboxusercontent.com/u/51695
 
 ## Usage
 
-java -jar imp.jar
-
-Point browser to http://localhost:8080/
+See the [tutorial](http://rega.kuleuven.be/cev/ecv/software/SpreaD3_tutorial).
 
 ## License
 
