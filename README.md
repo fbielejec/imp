@@ -1,4 +1,4 @@
-<img src="http://dl.dropboxusercontent.com/u/5169517/Screenshot.png" width="500" align="center">
+<img src="https://rega.kuleuven.be/cev/ecv/tutorials/figures/screenshot3.png/image" width="500" align="center">
 
 # Imp
 Version: 0.0.9, 2016 <br />
